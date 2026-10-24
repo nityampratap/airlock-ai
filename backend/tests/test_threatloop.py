@@ -16,11 +16,14 @@ demo_token = create_access_token(data={"sub": "usr_airlock_secops_01", "email": 
 client.headers["Authorization"] = f"Bearer {demo_token}"
 
 def test_approved_domain_allowlist():
-    """Verifies that only approved public intelligence sources are permitted."""
+    """Verifies that any public open-source intelligence source is permitted, while blocking private SSRF targets."""
     valid_urls = [
         "https://owasp.org/www-project-top-10-for-large-language-model-applications/",
+        "https://www.cisa.gov/resources-tools/resources/open-source-software-security-principles-and-practices",
+        "https://github.com/advisories",
         "https://atlas.mitre.org/techniques/AML.T0054",
         "https://www.nist.gov/itl/ai-risk-management-framework",
+        "https://arxiv.org/abs/2302.04237",
         "http://localhost:3000/staging/agent-chat"
     ]
     for url in valid_urls:
@@ -28,24 +31,26 @@ def test_approved_domain_allowlist():
         assert approved is True, f"Expected {url} to be approved, but got: {err}"
 
     invalid_urls = [
-        "https://evil-untrusted-exploit-hub.com/payload.txt",
-        "https://attacker.site.org/llm-leak",
-        "http://192.168.1.50/malicious"
+        "http://192.168.1.50/malicious",
+        "http://10.0.0.1/internal",
+        "http://169.254.169.254/latest/meta-data",
+        "http://localhost/admin",
+        "ftp://cisa.gov/exploit"
     ]
     for url in invalid_urls:
         approved, host, err = tinyfish_service.is_domain_approved(url)
         assert approved is False
-        assert "not in approved" in err or "validation failed" in err
+        assert "blocked" in err.lower() or "scheme" in err.lower()
 
 def test_unapproved_domain_rejection_api():
-    """Tests that API endpoints reject unapproved discovery target URLs with 400 Bad Request."""
+    """Tests that API endpoints reject private/internal SSRF target URLs with 400 Bad Request."""
     resp = client.post("/api/v1/threatloop/discover/sync", json={
         "organization_id": "org_airlock_labs_01",
-        "url": "https://malicious-threat-intel-source.ru/dump",
-        "goal": "Extract canary token"
+        "url": "http://169.254.169.254/latest/meta-data",
+        "goal": "Extract cloud metadata"
     })
     assert resp.status_code == 400
-    assert "not in approved public source allowlist" in resp.json()["detail"]
+    assert "blocked" in resp.json()["detail"].lower()
 
 def test_structured_schema_validation():
     """Validates that extracted intelligence must conform strictly to TinyFishExtractedFinding schema."""
@@ -68,12 +73,12 @@ def test_structured_schema_validation():
     assert is_valid is False
     assert "Schema validation error" in err
 
-    # Malformed: source URL from unapproved domain
+    # Malformed: source URL targeting internal metadata
     spoofed_domain_payload = valid_payload.copy()
-    spoofed_domain_payload["original_source_url"] = "https://untrusted-phishing.com/owasp"
+    spoofed_domain_payload["original_source_url"] = "http://169.254.169.254/owasp"
     is_valid, finding_obj, err = tinyfish_service.validate_extraction_schema(spoofed_domain_payload)
     assert is_valid is False
-    assert "not in approved" in err
+    assert "blocked" in err.lower()
 
 def test_untrusted_content_sanitizer():
     """Verifies that untrusted webpage content is sanitized against script injection and shell metacharacters."""

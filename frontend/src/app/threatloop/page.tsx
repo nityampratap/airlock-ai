@@ -113,11 +113,38 @@ export default function ThreatLoopPage() {
   }, [orgId]);
 
   const handleSourceSelect = (srcId: string) => {
+    if (srcId === "custom") {
+      setSelectedSource("custom");
+      setTargetUrl("");
+      setGoal(
+        "Browse the open-source security guidance at the specified URL and extract the risk relevant to AI-agent execution, tool security, and authorization controls. Return a JSON object with: risk_name, risk_category, short_explanation, evidence_excerpt, original_source_url, and suggested_defensive_control."
+      );
+      return;
+    }
     const src = sources.find((s) => s.id === srcId);
     if (src) {
       setSelectedSource(src.id);
       setTargetUrl(src.url);
       setGoal(src.default_goal);
+    }
+  };
+
+  const handleCustomUrlChange = (newUrl: string) => {
+    setTargetUrl(newUrl);
+    const match = sources.find((s) => s.url.toLowerCase() === newUrl.trim().toLowerCase());
+    if (match) {
+      setSelectedSource(match.id);
+      setGoal(match.default_goal);
+    } else {
+      setSelectedSource("custom");
+      try {
+        const u = new URL(newUrl);
+        setGoal(
+          `Browse the open-source security guidance at ${u.hostname} and extract key risk parameters, evidence excerpts, and defensive controls for autonomous AI agents. Return a JSON object with: risk_name, risk_category, short_explanation, evidence_excerpt, original_source_url, and suggested_defensive_control.`
+        );
+      } catch {
+        // User is still typing
+      }
     }
   };
 
@@ -383,10 +410,11 @@ export default function ThreatLoopPage() {
                     <div className="flex items-center justify-between">
                       <div className="text-xs font-mono uppercase tracking-wider text-[#86A8FF] font-semibold flex items-center gap-1.5">
                         <Globe className="w-3.5 h-3.5" />
-                        Approved Public Intelligence Sources
+                        Universal Open-Source Security Guidance Ingestion
                       </div>
-                      <span className="text-[11px] text-white/40 font-mono">
-                        Domain Allowlist Enforced
+                      <span className="text-[11px] text-[#75D6B1] font-mono flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#75D6B1] animate-pulse"></span>
+                        Any Public Open-Source URL Supported
                       </span>
                     </div>
 
@@ -406,7 +434,7 @@ export default function ThreatLoopPage() {
                               {src.name}
                               {src.recommended && (
                                 <span className="text-[10px] bg-[#68CFA9]/10 text-[#68CFA9] border border-[#68CFA9]/30 px-1.5 py-0.2 rounded font-mono">
-                                  FIRST SUPPORTED
+                                  RECOMMENDED
                                 </span>
                               )}
                             </span>
@@ -417,17 +445,50 @@ export default function ThreatLoopPage() {
                           <div className="text-[11px] text-white/50">{src.category}</div>
                         </div>
                       ))}
+
+                      {/* Custom Open-Source Target Option */}
+                      <div
+                        onClick={() => handleSourceSelect("custom")}
+                        className={`p-3.5 rounded-xl border border-dashed cursor-pointer transition-all ${
+                          selectedSource === "custom"
+                            ? "bg-[#121C30] border-[#85D8E7] shadow-[0_0_12px_rgba(133,216,231,0.2)]"
+                            : "bg-[#0B1220]/40 border-white/20 hover:border-[#85D8E7]/50"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-xs font-bold text-[#85D8E7] flex items-center gap-2">
+                            <span>🔗</span> Custom Open-Source Guidance URL
+                          </span>
+                          <span className="text-[10px] font-mono text-[#85D8E7] bg-[#85D8E7]/10 px-1.5 py-0.5 rounded border border-[#85D8E7]/30">
+                            ANY OPEN-SOURCE URL
+                          </span>
+                        </div>
+                        <div className="text-[11px] text-white/60">
+                          Enter any open-source security advisory, GitHub repo, CISA principle, academic paper, or framework guidance URL.
+                        </div>
+                      </div>
                     </div>
 
                     {/* Target URL */}
                     <div className="space-y-1.5">
-                      <label className="text-xs text-white/60 font-mono">Target Source URL</label>
+                      <div className="flex items-center justify-between">
+                        <label className="text-xs text-white/70 font-mono">
+                          Target Open-Source Guidance URL
+                        </label>
+                        <span className="text-[10px] font-mono text-[#86A8FF]">
+                          Public web &amp; repository allowlist
+                        </span>
+                      </div>
                       <input
                         type="text"
                         value={targetUrl}
-                        onChange={(e) => setTargetUrl(e.target.value)}
-                        className="w-full bg-[#0B1220] border border-white/[0.1] rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-[#86A8FF]"
+                        onChange={(e) => handleCustomUrlChange(e.target.value)}
+                        placeholder="https://www.cisa.gov/..., https://github.com/..., https://arxiv.org/..., or any open-source URL"
+                        className="w-full bg-[#0B1220] border border-white/[0.1] rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-[#86A8FF] placeholder:text-white/30"
                       />
+                      <p className="text-[11px] text-white/40">
+                        Supports CISA guidelines, GitHub advisories, OWASP standards, MITRE matrices, NIST frameworks, arXiv research, or any public open-source URL.
+                      </p>
                     </div>
 
                     {/* Goal Instructions */}
@@ -566,9 +627,16 @@ export default function ThreatLoopPage() {
                   <div className="p-3.5 rounded-xl bg-[#121C30] border border-[#68CFA9]/30 flex items-center gap-2.5">
                     <CheckCircle2 className="w-4 h-4 text-[#68CFA9] shrink-0" />
                     <div>
-                      <div className="text-[11px] font-mono text-white/50">Verified Domain</div>
-                      <div className="text-xs font-semibold text-[#68CFA9]">
-                        owasp.org (Authentic Public Source)
+                      <div className="text-[11px] font-mono text-white/50">Verified Source Domain</div>
+                      <div className="text-xs font-semibold text-[#68CFA9] truncate">
+                        {(() => {
+                          try {
+                            const u = new URL(extractedFinding.source_url || targetUrl);
+                            return `${u.hostname} (Authentic Open-Source Guidance)`;
+                          } catch {
+                            return "Verified Open-Source Guidance";
+                          }
+                        })()}
                       </div>
                     </div>
                   </div>
