@@ -1,0 +1,129 @@
+@import "tailwindcss";
+
+:root {
+  --canvas-midnight: #0B1220;
+  --canvas-deep: #121C30;
+  --canvas-elevated: #1B2942;
+  --surface-indigo: #283A5C;
+  --surface-bluegray: #344765;
+  
+  --accent-periwinkle: #86A8FF;
+  --accent-lavender: #A5A0F4;
+  --accent-cyan: #7CD5E4;
+  
+  --semantic-safe: #68CFA9;
+  --semantic-warning: #E8BB75;
+  --semantic-risk: #E5838F;
+
+  --text-primary: #F4F6FB;
+  --text-secondary: #ADBBD0;
+  --text-muted: #7587A4;
+}
+
+body {
+  background-color: var(--canvas-midnight);
+  color: var(--text-primary);
+  font-family: var(--font-inter, system-ui, sans-serif);
+  overflow-x: hidden;
+  selection-background-color: #86A8FF33;
+}
+
+/* Custom Tactical Claymorphism Surface */
+.clay-card {
+  background: linear-gradient(145deg, rgba(27, 41, 66, 0.85) 0%, rgba(18, 28, 48, 0.95) 100%);
+  border: 1px solid rgba(134, 168, 255, 0.12);
+  box-shadow: 
+    0 20px 40px -15px rgba(5, 10, 20, 0.8),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 1px 0 rgba(0, 0, 0, 0.4);
+  border-radius: 1rem;
+}
+
+.clay-card-interactive {
+  background: linear-gradient(145deg, rgba(27, 41, 66, 0.85) 0%, rgba(18, 28, 48, 0.95) 100%);
+  border: 1px solid rgba(134, 168, 255, 0.14);
+  box-shadow: 
+    0 15px 35px -10px rgba(5, 10, 20, 0.7),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.09),
+    inset 0 -1px 1px 0 rgba(0, 0, 0, 0.4);
+  border-radius: 1rem;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.clay-card-interactive:hover {
+  transform: translateY(-2px);
+  border-color: rgba(134, 168, 255, 0.28);
+  box-shadow: 
+    0 24px 50px -12px rgba(10, 20, 40, 0.9),
+    0 0 20px 0 rgba(134, 168, 255, 0.08),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+/* Glassmorphism Panel */
+.glass-panel {
+  background: rgba(18, 28, 48, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
+}
+
+/* Dimensional Tactical Button */
+.clay-btn-primary {
+  background: linear-gradient(180deg, #38517D 0%, #203150 100%);
+  border: 1px solid rgba(134, 168, 255, 0.35);
+  box-shadow: 
+    0 6px 16px -2px rgba(134, 168, 255, 0.25),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.25);
+  color: #F4F6FB;
+  font-weight: 500;
+  transition: all 0.15s ease-out;
+}
+
+.clay-btn-primary:hover {
+  background: linear-gradient(180deg, #446194 0%, #283D64 100%);
+  border-color: rgba(134, 168, 255, 0.6);
+  box-shadow: 
+    0 8px 22px -2px rgba(134, 168, 255, 0.35),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.clay-btn-primary:active {
+  transform: translateY(1px);
+  box-shadow: 
+    0 2px 8px rgba(134, 168, 255, 0.2),
+    inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Spatial Chamber Borders */
+.chamber-red {
+  background: linear-gradient(180deg, rgba(229, 131, 143, 0.06) 0%, rgba(18, 28, 48, 0.95) 100%);
+  border: 1px solid rgba(229, 131, 143, 0.28);
+}
+
+.chamber-broker {
+  background: linear-gradient(180deg, rgba(134, 168, 255, 0.08) 0%, rgba(18, 28, 48, 0.95) 100%);
+  border: 1px solid rgba(134, 168, 255, 0.35);
+  box-shadow: 0 0 30px rgba(134, 168, 255, 0.08);
+}
+
+.chamber-blue {
+  background: linear-gradient(180deg, rgba(104, 207, 169, 0.06) 0%, rgba(18, 28, 48, 0.95) 100%);
+  border: 1px solid rgba(104, 207, 169, 0.28);
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0B1220;
+}
+::-webkit-scrollbar-thumb {
+  background: #283A5C;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #344765;
+}
