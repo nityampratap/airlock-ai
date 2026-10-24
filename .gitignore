@@ -1,0 +1,24 @@
+# Environment & Venv
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.db
+*.sqlite3
+
+# Node & Next.js
+node_modules/
+.next/
+dist/
+build/
+.turbo/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS & Keys
+.DS_Store
+Thumbs.db
+backend/keys/ed25519_private.pem
+sample_receipt.json
