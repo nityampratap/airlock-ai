@@ -317,3 +317,139 @@ class ContactLead(Base):
     message = Column(Text, nullable=False)
     status = Column(String(50), default="new")
     created_at = Column(DateTime, default=datetime.utcnow)
+
+
+# =====================================================================
+# AIRLOCK COMMERCELAB — AUTONOMOUS BUSINESS-ACTION SECURITY LAB MODELS
+# =====================================================================
+
+class DemoCustomer(Base):
+    """Synthetic customer entity for Northstar Store security testing."""
+    __tablename__ = "demo_customers"
+
+    id = Column(String(64), primary_key=True)  # e.g. cust_demo_01
+    name = Column(String(255), nullable=False)
+    email = Column(String(255), nullable=False)
+    phone = Column(String(50), nullable=True)
+    account_tier = Column(String(50), default="standard")
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    orders = relationship("DemoOrder", back_populates="customer")
+
+
+class DemoOrder(Base):
+    """Synthetic e-commerce order under test (e.g. ORD-DEMO-2049, ₹1,499)."""
+    __tablename__ = "demo_orders"
+
+    id = Column(String(64), primary_key=True)  # e.g. ORD-DEMO-2049
+    customer_id = Column(String(64), ForeignKey("demo_customers.id"), nullable=False)
+    customer_name = Column(String(255), nullable=False)
+    order_amount = Column(Float, nullable=False, default=1499.00)
+    currency = Column(String(10), default="INR")
+    currency_symbol = Column(String(10), default="₹")
+    payment_status = Column(String(50), default="paid")  # paid, refunded, partially_refunded
+    refund_status = Column(String(50), default="not_requested")  # not_requested, pending, refunded, denied
+    items_summary = Column(Text, default="Apex Wireless Noise-Cancelling Headphones (Midnight Black)")
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    customer = relationship("DemoCustomer", back_populates="orders")
+    verification_state = relationship("CustomerVerificationState", back_populates="order", uselist=False)
+    refund_requests = relationship("RefundRequest", back_populates="order")
+    refund_transactions = relationship("RefundTransaction", back_populates="order")
+
+
+class CustomerVerificationState(Base):
+    """Independent customer authentication/verification state for an order session."""
+    __tablename__ = "customer_verification_states"
+
+    id = Column(String(36), primary_key=True, default=gen_uuid)
+    order_id = Column(String(64), ForeignKey("demo_orders.id", ondelete="CASCADE"), unique=True, nullable=False)
+    customer_id = Column(String(64), ForeignKey("demo_customers.id"), nullable=False)
+    is_verified = Column(Boolean, default=False)
+    verification_method = Column(String(50), default="none")  # none, otp_sms, id_document, biometric
+    session_token = Column(String(128), nullable=True)
+    verified_at = Column(DateTime, nullable=True)
+    expires_at = Column(DateTime, nullable=True)
+
+    order = relationship("DemoOrder", back_populates="verification_state")
+
+
+class RefundRequest(Base):
+    """Tracks incoming refund requests from customer or AI chatbot tool calls."""
+    __tablename__ = "refund_requests"
+
+    id = Column(String(36), primary_key=True, default=gen_uuid)
+    order_id = Column(String(64), ForeignKey("demo_orders.id"), nullable=False)
+    customer_id = Column(String(64), nullable=False)
+    requested_amount = Column(Float, nullable=False)
+    reason = Column(Text, nullable=False)
+    requester_type = Column(String(50), default="customer_support_ai_agent")  # customer_support_ai_agent, verified_customer, unauthenticated_web_client
+    status = Column(String(50), default="pending")  # pending, authorized, denied, executed
+    idempotency_key = Column(String(128), unique=True, index=True, nullable=False)
+    policy_mode = Column(String(50), default="vulnerable")  # vulnerable, hardened
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    order = relationship("DemoOrder", back_populates="refund_requests")
+    transaction = relationship("RefundTransaction", back_populates="refund_request", uselist=False)
+
+
+class RefundTransaction(Base):
+    """Immutable synthetic financial ledger transaction recording executed refunds."""
+    __tablename__ = "refund_transactions"
+
+    id = Column(String(36), primary_key=True, default=gen_uuid)
+    refund_request_id = Column(String(36), ForeignKey("refund_requests.id"), nullable=False)
+    order_id = Column(String(64), ForeignKey("demo_orders.id"), nullable=False)
+    amount = Column(Float, nullable=False)
+    status = Column(String(50), default="executed")  # executed, failed
+    ledger_account = Column(String(100), default="SYNTHETIC_MERCHANT_RESERVE_INR")
+    balance_before = Column(Float, nullable=False)
+    balance_after = Column(Float, nullable=False)
+    reference_code = Column(String(64), nullable=False)
+    executed_at = Column(DateTime, default=datetime.utcnow)
+
+    order = relationship("DemoOrder", back_populates="refund_transactions")
+    refund_request = relationship("RefundRequest", back_populates="transaction")
+
+
+class RefundPolicyDecision(Base):
+    """Audit log of policy decisions made on refund requests."""
+    __tablename__ = "refund_policy_decisions"
+
+    id = Column(String(36), primary_key=True, default=gen_uuid)
+    test_run_id = Column(String(36), nullable=True)
+    order_id = Column(String(64), nullable=False)
+    policy_mode = Column(String(50), nullable=False)  # vulnerable, hardened
+    policy_version = Column(String(50), default="v1.0.0-hardened")
+    decision = Column(String(50), nullable=False)  # ALLOW, DENY
+    checks_performed = Column(JSON, default=dict)  # {"order_exists": true, "customer_verified": false, ...}
+    denial_reason = Column(Text, nullable=True)
+    enforced_at = Column(DateTime, default=datetime.utcnow)
+
+
+class SecurityTestRun(Base):
+    """End-to-end autonomous business-action security test execution record."""
+    __tablename__ = "security_test_runs"
+
+    id = Column(String(36), primary_key=True, default=gen_uuid)
+    organization_id = Column(String(36), ForeignKey("organizations.id", ondelete="CASCADE"), nullable=False)
+    scenario_id = Column(String(100), default="SCENARIO_REFUND_UNAUTHORIZED_01")
+    order_id = Column(String(64), nullable=False)
+    policy_mode = Column(String(50), default="vulnerable")  # vulnerable, hardened
+    policy_version = Column(String(50), default="v0.9.0-unrestricted")
+    tinyfish_task_id = Column(String(255), nullable=True)
+    is_live_agent = Column(Boolean, default=False)
+    browser_session_url = Column(String(512), nullable=True)
+    test_prompt = Column(Text, nullable=False)
+    chatbot_observed_response = Column(Text, nullable=True)
+    chatbot_claimed_action = Column(String(50), nullable=True)  # REFUND_EXECUTED, REFUND_DENIED, VERIFICATION_REQUIRED, INCONCLUSIVE
+    actual_backend_action = Column(String(50), nullable=True)   # TRANSACTION_EXECUTED, TRANSACTION_DENIED_NO_CHANGE
+    verdict = Column(String(50), nullable=False)  # SECURITY_FAILURE, SECURITY_CONTROL_PASSED, RESPONSE_INTEGRITY_ISSUE, INCONCLUSIVE
+    before_ledger_snapshot = Column(JSON, nullable=False)
+    after_ledger_snapshot = Column(JSON, nullable=False)
+    evidence_summary = Column(Text, nullable=True)
+    receipt_id = Column(String(36), ForeignKey("signed_receipts.id", ondelete="SET NULL"), nullable=True)
+    is_regression_test = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+

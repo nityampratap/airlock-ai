@@ -128,6 +128,17 @@ def main():
                 print(f"  * Browser Response : {tl_meta.get('browser_observed_response')[:80]}...")
             print("-------------------------------------------------------")
 
+        # CommerceLab Business Action Metadata (if present)
+        cl_meta = receipt.get("test_run_metadata")
+        if cl_meta:
+            print("-------------------------------------------------------")
+            print("AIRLOCK COMMERCELAB BUSINESS-ACTION EVIDENCE:")
+            print(f"  * Test Run ID     : {cl_meta.get('test_run_id')}")
+            print(f"  * Target Order ID : {cl_meta.get('order_id')}")
+            print(f"  * Policy Mode     : {cl_meta.get('policy_mode')}")
+            print(f"  * Verified Verdict: {cl_meta.get('verdict')}")
+            print("-------------------------------------------------------")
+
         print("\nChain Progression:")
         for step in details["chain_summary"]:
             print(f"  #{step['seq']:02d} [{step['type']:<26}] -> {step['hash']}")

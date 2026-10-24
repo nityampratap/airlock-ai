@@ -46,7 +46,7 @@ export function getCurrentOrg(): Organization | null {
   return null;
 }
 
-export async function fetchWithAuth(endpoint: string, options: RequestInit = {}) {
+export async function fetchWithAuth(endpoint: string, options: RequestInit = {}, isRetry: boolean = false): Promise<any> {
   const token = getAuthToken();
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -60,6 +60,24 @@ export async function fetchWithAuth(endpoint: string, options: RequestInit = {})
     ...options,
     headers,
   });
+
+  // If 401 and not already retrying, auto-reauthenticate with demo fallback
+  if (res.status === 401 && !isRetry && endpoint !== "/auth/login") {
+    try {
+      const loginRes = await fetch(`${API_BASE}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: "secops@airlock.ai", password: "AirlockSec2026!" })
+      });
+      if (loginRes.ok) {
+        const loginData = await loginRes.json();
+        setAuthSession(loginData.access_token, loginData.user, loginData.organizations);
+        return fetchWithAuth(endpoint, options, true);
+      }
+    } catch (e) {
+      console.warn("Auto-reauthentication failed:", e);
+    }
+  }
 
   if (!res.ok) {
     const errorData = await res.json().catch(() => ({ detail: res.statusText }));
@@ -280,5 +298,82 @@ export const api = {
 
   getThreatLoopRun: async (runId: string) => {
     return fetchWithAuth(`/threatloop/runs/${encodeURIComponent(runId)}`);
+  },
+
+  // AIRLOCK CommerceLab — Business-Action Security Lab
+  getCommerceLabOrder: async (orderId = "ORD-DEMO-2049") => {
+    return fetchWithAuth(`/commercelab/orders/${encodeURIComponent(orderId)}`);
+  },
+
+  resetCommerceLabOrder: async (orderId = "ORD-DEMO-2049") => {
+    return fetchWithAuth(`/commercelab/orders/${encodeURIComponent(orderId)}/reset`, {
+      method: "POST"
+    });
+  },
+
+  setCommerceLabCustomerVerification: async (orderId: string, isVerified: boolean, method = "otp_sms") => {
+    return fetchWithAuth(`/commercelab/orders/${encodeURIComponent(orderId)}/verify`, {
+      method: "POST",
+      body: JSON.stringify({ is_verified: isVerified, method })
+    });
+  },
+
+  processCommerceLabRefund: async (orderId: string, amount: number, reason: string, policyMode: "vulnerable" | "hardened") => {
+    return fetchWithAuth("/commercelab/refund", {
+      method: "POST",
+      body: JSON.stringify({ order_id: orderId, amount, reason, policy_mode: policyMode })
+    });
+  },
+
+  sendCommerceLabChatMessage: async (message: string, policyMode: "vulnerable" | "hardened", orderId = "ORD-DEMO-2049") => {
+    return fetchWithAuth("/commercelab/chat", {
+      method: "POST",
+      body: JSON.stringify({ message, policy_mode: policyMode, order_id: orderId })
+    });
+  },
+
+  runCommerceLabSecurityTest: async (
+    orgId: string,
+    policyMode: "vulnerable" | "hardened",
+    orderId = "ORD-DEMO-2049",
+    testPrompt?: string,
+    stagingUrl?: string
+  ) => {
+    return fetchWithAuth("/commercelab/test/run", {
+      method: "POST",
+      body: JSON.stringify({
+        organization_id: orgId,
+        policy_mode: policyMode,
+        order_id: orderId,
+        test_prompt: testPrompt,
+        staging_url: stagingUrl
+      })
+    });
+  },
+
+  runCommerceLabFixAndRetest: async (orgId: string, orderId = "ORD-DEMO-2049") => {
+    return fetchWithAuth("/commercelab/test/fix-and-retest", {
+      method: "POST",
+      body: JSON.stringify({ organization_id: orgId, order_id: orderId })
+    });
+  },
+
+  getCommerceLabRuns: async (orgId: string) => {
+    return fetchWithAuth(`/commercelab/runs?org_id=${encodeURIComponent(orgId)}`);
+  },
+
+  getCommerceLabRun: async (runId: string) => {
+    return fetchWithAuth(`/commercelab/runs/${encodeURIComponent(runId)}`);
+  },
+
+  downloadCommerceLabReceipt: async (runId: string) => {
+    return fetchWithAuth(`/commercelab/receipts/${encodeURIComponent(runId)}/download`);
+  },
+
+  verifyCommerceLabReceipt: async (receiptData: any) => {
+    return fetchWithAuth("/commercelab/receipts/verify", {
+      method: "POST",
+      body: JSON.stringify({ receipt: receiptData })
+    });
   },
 };

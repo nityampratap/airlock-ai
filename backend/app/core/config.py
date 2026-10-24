@@ -1,17 +1,23 @@
 import os
 import secrets
 from pathlib import Path
+from dotenv import load_dotenv
 from pydantic_settings import BaseSettings
 
+# Resolve both backend dir and workspace root dir
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
+ROOT_DIR = BASE_DIR.parent
+
+# Load .env from workspace root first, then backend dir if present
+load_dotenv(ROOT_DIR / ".env")
+load_dotenv(BASE_DIR / ".env")
 
 def _get_secret_key() -> str:
-    """Get SECRET_KEY from environment. Generate a random one for development only."""
-    key = os.getenv("SECRET_KEY", "")
-    if not key:
-        # Auto-generate for local development; in production, always set SECRET_KEY env var
-        key = secrets.token_urlsafe(64)
-        print("[WARNING] SECRET_KEY not set — generated ephemeral key. Set SECRET_KEY env var for production.")
+    """Get SECRET_KEY from environment. Use fixed development fallback if not set."""
+    key = os.getenv("SECRET_KEY", "").strip()
+    if not key or "change-this" in key:
+        # Fixed stable dev secret to prevent session invalidation on restart
+        key = "airlock-dev-fixed-secret-key-evaluation-assurance-platform-2026-xyz"
     return key
 
 class Settings(BaseSettings):

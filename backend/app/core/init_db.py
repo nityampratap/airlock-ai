@@ -32,9 +32,14 @@ def init_db():
             except Exception:
                 pass
 
+    from backend.app.services.commercelab_service import commercelab_service
+
     db = SessionLocal()
     try:
-        # Check if already seeded
+        # Ensure CommerceLab e-commerce fixtures are always seeded
+        commercelab_service.seed_fixtures_if_needed(db)
+
+        # Check if tenant is already seeded
         demo_user = db.query(User).filter(User.email == "secops@airlock.ai").first()
         if demo_user:
             return

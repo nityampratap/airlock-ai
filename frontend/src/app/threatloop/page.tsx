@@ -29,9 +29,10 @@ import {
 } from "lucide-react";
 import { AppShell } from "@/components/dashboard/AppShell";
 import { api, getCurrentOrg } from "@/lib/api";
+import { CommerceLabView } from "@/components/threatloop/CommerceLabView";
 
 export default function ThreatLoopPage() {
-  const [activeTab, setActiveTab] = useState<"loop" | "browser_test" | "drift">("loop");
+  const [activeTab, setActiveTab] = useState<"loop" | "commercelab" | "browser_test" | "drift">("loop");
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3 | 4>(1);
 
   // Discovery state
@@ -267,50 +268,68 @@ export default function ThreatLoopPage() {
               </div>
               <h1 className="text-2xl font-bold tracking-tight text-[#F4F6FB] flex items-center gap-3">
                 AIRLOCK ThreatLoop
-                <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded-full bg-[#86A8FF]/10 text-[#86A8FF] border border-[#86A8FF]/30">
+                <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-[#8CA9FF]/15 text-[#8CA9FF] border border-[#8CA9FF]/40 flex items-center gap-1.5 shadow-[0_0_12px_rgba(140,169,255,0.2)]">
+                  <span className="w-2 h-2 rounded-full bg-[#75D6B1] animate-pulse"></span>
                   POWERED BY TINYFISH
                 </span>
               </h1>
             </div>
             <p className="mt-1.5 text-sm text-white/60">
-              Convert live public AI-security intelligence into approved, repeatable security evaluations with independently verifiable evidence receipts.
+              Convert live public AI-security intelligence into approved, repeatable security evaluations with independently verifiable evidence receipts via TinyFish web agents.
             </p>
           </div>
 
           {/* Navigation Mode Tabs */}
-          <div className="flex items-center p-1 rounded-xl bg-[#121C30] border border-white/[0.08]">
+          <div className="flex items-center p-1.5 rounded-xl bg-[#121C30] border border-white/[0.08] flex-wrap gap-1.5">
             <button
               onClick={() => setActiveTab("loop")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+              className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
                 activeTab === "loop"
-                  ? "bg-[#86A8FF] text-[#0B1220] shadow-md font-semibold"
-                  : "text-white/60 hover:text-white"
+                  ? "bg-[#8CA9FF] text-[#0B1220] shadow-md"
+                  : "text-white/70 hover:text-white hover:bg-white/[0.04]"
               }`}
             >
-              Assurance Loop
+              <span>🐟</span> TinyFish Discovery Loop
+            </button>
+            <button
+              onClick={() => setActiveTab("commercelab")}
+              className={`px-3.5 py-2 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${
+                activeTab === "commercelab"
+                  ? "bg-[#8CA9FF] text-[#0B1220] shadow-md font-semibold"
+                  : "text-white/70 hover:text-white hover:bg-white/[0.04]"
+              }`}
+            >
+              <span>🛒</span> Refund Security Lab 2.0
             </button>
             <button
               onClick={() => setActiveTab("browser_test")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+              className={`px-3.5 py-2 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${
                 activeTab === "browser_test"
-                  ? "bg-[#86A8FF] text-[#0B1220] shadow-md font-semibold"
-                  : "text-white/60 hover:text-white"
+                  ? "bg-[#8CA9FF] text-[#0B1220] shadow-md font-semibold"
+                  : "text-white/70 hover:text-white hover:bg-white/[0.04]"
               }`}
             >
-              Staging Web Agent
+              <span>🌐</span> TinyFish Staging Agent
             </button>
             <button
               onClick={() => setActiveTab("drift")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+              className={`px-3.5 py-2 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${
                 activeTab === "drift"
-                  ? "bg-[#86A8FF] text-[#0B1220] shadow-md font-semibold"
-                  : "text-white/60 hover:text-white"
+                  ? "bg-[#8CA9FF] text-[#0B1220] shadow-md font-semibold"
+                  : "text-white/70 hover:text-white hover:bg-white/[0.04]"
               }`}
             >
-              Upstream Drift
+              <span>📊</span> Upstream Drift
             </button>
           </div>
         </div>
+
+        {/* =========================================================================
+            TAB 0: AIRLOCK COMMERCELAB — AUTONOMOUS BUSINESS ACTION LAB
+           ========================================================================= */}
+        {activeTab === "commercelab" && (
+          <CommerceLabView orgId={orgId} />
+        )}
 
         {/* =========================================================================
             TAB 1: 4-STEP END-TO-END ASSURANCE LOOP

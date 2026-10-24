@@ -14,7 +14,8 @@ from backend.app.core.security import (
 from backend.app.models.models import (
     User, Organization, OrganizationMember, Project, SecurityPolicy,
     TestCase, EvaluationRun, AuditEvent, SignedReceipt, ThreatFinding,
-    Subscription, ContactLead, PolicyDecision, ThreatLoopRun
+    Subscription, ContactLead, PolicyDecision, ThreatLoopRun,
+    SecurityTestRun, DemoOrder, DemoCustomer, RefundTransaction
 )
 from backend.app.crypto.crypto_engine import crypto_engine
 from backend.app.engine.evaluation_engine import evaluation_engine
@@ -24,6 +25,7 @@ from backend.app.services.tinyfish_service import (
 )
 from backend.app.services.threat_mapping import threat_mapping_service, SAFE_TEST_TEMPLATES
 from backend.app.services.drift_service import drift_detection_service
+from backend.app.services.commercelab_service import commercelab_service
 
 api_router = APIRouter()
 
@@ -1105,3 +1107,220 @@ def get_threatloop_run(run_id: str, current_user: User = Depends(get_current_use
         } if finding else None,
         "receipt": json.loads(receipt.canonical_payload_json) if receipt else None
     }
+
+
+# =====================================================================
+# AIRLOCK COMMERCELAB — AUTONOMOUS BUSINESS-ACTION LAB ENDPOINTS
+# =====================================================================
+
+class CommerceLabRefundRequest(BaseModel):
+    order_id: str = "ORD-DEMO-2049"
+    amount: float = 1499.00
+    reason: str = "Customer requested refund via chat support"
+    policy_mode: str = "vulnerable"
+    requester_type: str = "customer_support_ai_agent"
+    idempotency_key: Optional[str] = None
+
+class CommerceLabChatRequest(BaseModel):
+    message: str
+    policy_mode: str = "vulnerable"
+    order_id: str = "ORD-DEMO-2049"
+
+class CommerceLabTestRunRequest(BaseModel):
+    organization_id: str = "org_airlock_labs_01"
+    policy_mode: str = "vulnerable"
+    order_id: str = "ORD-DEMO-2049"
+    test_prompt: Optional[str] = None
+    staging_url: Optional[str] = None
+
+class CommerceLabFixAndRetestRequest(BaseModel):
+    organization_id: str = "org_airlock_labs_01"
+    order_id: str = "ORD-DEMO-2049"
+
+class CommerceLabVerifyCustomerRequest(BaseModel):
+    is_verified: bool = True
+    method: str = "otp_sms"
+
+class CommerceLabReceiptVerifyRequest(BaseModel):
+    receipt: Dict[str, Any]
+
+
+@api_router.get("/commercelab/orders/{order_id}")
+def get_commercelab_order(order_id: str, db: Session = Depends(get_db)):
+    """Retrieves synthetic order details, verification status, and recent ledger transactions."""
+    try:
+        return commercelab_service.get_order_details(db, order_id)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+@api_router.post("/commercelab/orders/{order_id}/reset")
+def reset_commercelab_order(order_id: str, db: Session = Depends(get_db)):
+    """Resets the synthetic order fixture to unrefunded and unverified state for clean testing."""
+    try:
+        return commercelab_service.reset_order_fixture(db, order_id)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@api_router.post("/commercelab/orders/{order_id}/verify")
+def set_commercelab_customer_verification(
+    order_id: str,
+    req: CommerceLabVerifyCustomerRequest,
+    db: Session = Depends(get_db)
+):
+    """Sets the customer verification state (used to demonstrate legitimate refund processing in Demo 4)."""
+    try:
+        return commercelab_service.set_verification_state(db, order_id, req.is_verified, req.method)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@api_router.post("/commercelab/refund")
+def process_commercelab_refund(
+    req: CommerceLabRefundRequest,
+    db: Session = Depends(get_db)
+):
+    """Directly invokes the refund authorization engine under Vulnerable or Hardened policy."""
+    res = commercelab_service.process_refund(
+        db=db,
+        order_id=req.order_id,
+        amount=req.amount,
+        reason=req.reason,
+        requester_type=req.requester_type,
+        policy_mode=req.policy_mode,
+        idempotency_key=req.idempotency_key
+    )
+    return res
+
+@api_router.post("/commercelab/chat")
+def commercelab_chatbot_chat(
+    req: CommerceLabChatRequest,
+    db: Session = Depends(get_db)
+):
+    """Customer-support AI chatbot for Northstar Store. Translates requests into backend tool calls."""
+    return commercelab_service.handle_chatbot_chat(
+        db=db,
+        message=req.message,
+        policy_mode=req.policy_mode,
+        order_id=req.order_id
+    )
+
+@api_router.post("/commercelab/test/run")
+def run_commercelab_security_test(
+    req: CommerceLabTestRunRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Executes autonomous business-action security test (Vulnerable or Hardened) and verifies ledger."""
+    return commercelab_service.execute_security_test(
+        db=db,
+        organization_id=req.organization_id,
+        policy_mode=req.policy_mode,
+        order_id=req.order_id,
+        test_prompt=req.test_prompt,
+        staging_url=req.staging_url
+    )
+
+@api_router.post("/commercelab/test/fix-and-retest")
+def run_commercelab_fix_and_retest(
+    req: CommerceLabFixAndRetestRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Executes the complete Fix & Retest comparative demonstration."""
+    return commercelab_service.run_fix_and_retest(
+        db=db,
+        organization_id=req.organization_id,
+        order_id=req.order_id
+    )
+
+@api_router.get("/commercelab/runs")
+def list_commercelab_runs(
+    org_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Lists past CommerceLab security test runs for an organization."""
+    runs = db.query(SecurityTestRun).filter(
+        SecurityTestRun.organization_id == org_id
+    ).order_by(SecurityTestRun.created_at.desc()).limit(20).all()
+
+    return [
+        {
+            "id": r.id,
+            "scenario_id": r.scenario_id,
+            "order_id": r.order_id,
+            "policy_mode": r.policy_mode,
+            "policy_version": r.policy_version,
+            "tinyfish_task_id": r.tinyfish_task_id,
+            "is_live_agent": r.is_live_agent,
+            "verdict": r.verdict,
+            "chatbot_claimed_action": r.chatbot_claimed_action,
+            "actual_backend_action": r.actual_backend_action,
+            "receipt_id": r.receipt_id,
+            "created_at": r.created_at.isoformat()
+        } for r in runs
+    ]
+
+@api_router.get("/commercelab/runs/{run_id}")
+def get_commercelab_run(
+    run_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Gets details and receipts of a specific CommerceLab security test run."""
+    run = db.query(SecurityTestRun).filter(SecurityTestRun.id == run_id).first()
+    if not run:
+        raise HTTPException(status_code=404, detail="Security test run not found")
+
+    receipt = db.query(SignedReceipt).filter(SignedReceipt.id == run.receipt_id).first() if run.receipt_id else None
+
+    return {
+        "id": run.id,
+        "scenario_id": run.scenario_id,
+        "order_id": run.order_id,
+        "policy_mode": run.policy_mode,
+        "policy_version": run.policy_version,
+        "tinyfish_task_id": run.tinyfish_task_id,
+        "is_live_agent": run.is_live_agent,
+        "browser_session_url": run.browser_session_url,
+        "test_prompt": run.test_prompt,
+        "chatbot_observed_response": run.chatbot_observed_response,
+        "chatbot_claimed_action": run.chatbot_claimed_action,
+        "actual_backend_action": run.actual_backend_action,
+        "verdict": run.verdict,
+        "before_ledger": run.before_ledger_snapshot,
+        "after_ledger": run.after_ledger_snapshot,
+        "evidence_summary": run.evidence_summary,
+        "receipt_id": run.receipt_id,
+        "receipt": json.loads(receipt.canonical_payload_json) if receipt else None,
+        "created_at": run.created_at.isoformat()
+    }
+
+@api_router.get("/commercelab/receipts/{run_id}/download")
+def download_commercelab_receipt(
+    run_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Downloads portable JSON evidence bundle for a CommerceLab test run."""
+    run = db.query(SecurityTestRun).filter(SecurityTestRun.id == run_id).first()
+    if not run or not run.receipt_id:
+        raise HTTPException(status_code=404, detail="Receipt not found for this test run")
+
+    receipt = db.query(SignedReceipt).filter(SignedReceipt.id == run.receipt_id).first()
+    if not receipt:
+        raise HTTPException(status_code=404, detail="Signed receipt record missing")
+
+    return json.loads(receipt.canonical_payload_json)
+
+@api_router.post("/commercelab/receipts/verify")
+def verify_commercelab_receipt(req: CommerceLabReceiptVerifyRequest):
+    """Independently verifies SHA-256 audit event chain and Ed25519 digital signature of evidence receipt."""
+    is_valid, msg = crypto_engine.verify_receipt(req.receipt)
+    return {
+        "is_valid": is_valid,
+        "message": msg,
+        "verified_algorithm": req.receipt.get("algorithm", "Ed25519-SHA256"),
+        "root_hash": req.receipt.get("root_hash", ""),
+        "timestamp": datetime.utcnow().isoformat()
+    }
+

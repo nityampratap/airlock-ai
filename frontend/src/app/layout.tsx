@@ -1,25 +1,5 @@
 import type { Metadata } from "next";
-import { Manrope, Inter, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
-
-const manrope = Manrope({
-  subsets: ["latin"],
-  variable: "--font-manrope",
-  display: "swap",
-});
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
-
-const ibmPlexMono = IBM_Plex_Mono({
-  weight: ["400", "500", "600"],
-  subsets: ["latin"],
-  variable: "--font-mono",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "AIRLOCK AI — Prove the test. Then trust the result.",
@@ -36,8 +16,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${manrope.variable} ${inter.variable} ${ibmPlexMono.variable} dark`}>
-      <body className="min-h-screen bg-[#0B1220] text-[#F4F6FB] antialiased selection:bg-[#86A8FF]/20 selection:text-[#86A8FF]">
+    <html lang="en" className="dark">
+      <body className="min-h-screen bg-[#0B1220] text-[#F4F6FC] antialiased">
         {children}
       </body>
     </html>
