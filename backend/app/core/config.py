@@ -1,18 +1,29 @@
 import os
+import secrets
 from pathlib import Path
 from pydantic_settings import BaseSettings
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
+def _get_secret_key() -> str:
+    """Get SECRET_KEY from environment. Generate a random one for development only."""
+    key = os.getenv("SECRET_KEY", "")
+    if not key:
+        # Auto-generate for local development; in production, always set SECRET_KEY env var
+        key = secrets.token_urlsafe(64)
+        print("[WARNING] SECRET_KEY not set — generated ephemeral key. Set SECRET_KEY env var for production.")
+    return key
+
 class Settings(BaseSettings):
     PROJECT_NAME: str = "AIRLOCK AI"
     VERSION: str = "1.0.0"
     API_V1_STR: str = "/api/v1"
+    DEBUG: bool = os.getenv("DEBUG", "true").lower() in ("true", "1", "yes")
     
     # Security & JWT
-    SECRET_KEY: str = os.getenv("SECRET_KEY", "airlock-ai-prod-eval-assurance-sec-key-99214-alpha")
+    SECRET_KEY: str = _get_secret_key()
     ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7 days
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("TOKEN_EXPIRE_MINUTES", "1440"))  # 24 hours
     
     # Cryptographic Evidence Seal (Ed25519)
     KEYS_DIR: Path = BASE_DIR / "keys"
@@ -25,12 +36,13 @@ class Settings(BaseSettings):
         f"sqlite:///{BASE_DIR / 'airlock_ai.db'}"
     )
     
-    # CORS
+    # CORS — use CORS_ORIGINS env var (comma-separated) in production
     BACKEND_CORS_ORIGINS: list[str] = [
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "http://localhost:8000",
-        "http://127.0.0.1:8000",
+        origin.strip()
+        for origin in os.getenv(
+            "CORS_ORIGINS",
+            "http://localhost:3000,http://127.0.0.1:3000,http://localhost:8000,http://127.0.0.1:8000,http://localhost:8005,http://127.0.0.1:8005"
+        ).split(",")
     ]
     
     # TinyFish Web Intelligence (Safe Research & Web Agent API)
@@ -48,9 +60,9 @@ class Settings(BaseSettings):
     # Authorized Staging Web Target
     STAGING_APP_URL: str = os.getenv("STAGING_APP_URL", "http://localhost:3000/staging/agent-chat")
     
-    # Commercial Billing (Stripe test mode)
-    STRIPE_API_KEY: str = os.getenv("STRIPE_API_KEY", "sk_test_airlock_mock_mode")
-    STRIPE_WEBHOOK_SECRET: str = os.getenv("STRIPE_WEBHOOK_SECRET", "whsec_mock")
+    # Commercial Billing (Stripe) — must be set via env vars
+    STRIPE_API_KEY: str = os.getenv("STRIPE_API_KEY", "")
+    STRIPE_WEBHOOK_SECRET: str = os.getenv("STRIPE_WEBHOOK_SECRET", "")
 
     class Config:
         case_sensitive = True

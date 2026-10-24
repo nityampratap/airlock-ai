@@ -96,25 +96,25 @@ export const api = {
 
   // Dashboard & Metrics
   getDashboard: async (orgId: string) => {
-    return fetchWithAuth(`/organizations/${orgId}/dashboard`);
+    return fetchWithAuth(`/organizations/${encodeURIComponent(orgId)}/dashboard`);
   },
 
   // Projects & Test Cases
   getProjects: async (orgId: string) => {
-    return fetchWithAuth(`/organizations/${orgId}/projects`);
+    return fetchWithAuth(`/organizations/${encodeURIComponent(orgId)}/projects`);
   },
 
   getProjectTestCases: async (projectId: string) => {
-    return fetchWithAuth(`/projects/${projectId}/test-cases`);
+    return fetchWithAuth(`/projects/${encodeURIComponent(projectId)}/test-cases`);
   },
 
   // Policies
   getPolicies: async (orgId: string) => {
-    return fetchWithAuth(`/organizations/${orgId}/policies`);
+    return fetchWithAuth(`/organizations/${encodeURIComponent(orgId)}/policies`);
   },
 
   updatePolicy: async (orgId: string, data: any) => {
-    return fetchWithAuth(`/organizations/${orgId}/policies`, {
+    return fetchWithAuth(`/organizations/${encodeURIComponent(orgId)}/policies`, {
       method: "POST",
       body: JSON.stringify(data),
     });
@@ -134,12 +134,12 @@ export const api = {
   },
 
   getEvaluationDetails: async (evalId: string) => {
-    return fetchWithAuth(`/evaluations/${evalId}`);
+    return fetchWithAuth(`/evaluations/${encodeURIComponent(evalId)}`);
   },
 
   // Cryptographic Receipts
   downloadReceipt: async (evalId: string) => {
-    return fetchWithAuth(`/receipts/${evalId}/download`);
+    return fetchWithAuth(`/receipts/${encodeURIComponent(evalId)}/download`);
   },
 
   verifyReceipt: async (receiptData: any) => {
@@ -151,18 +151,18 @@ export const api = {
 
   // Threat Intelligence
   getThreatFindings: async (orgId: string) => {
-    return fetchWithAuth(`/organizations/${orgId}/threat-findings`);
+    return fetchWithAuth(`/organizations/${encodeURIComponent(orgId)}/threat-findings`);
   },
 
   approveThreatFinding: async (findingId: string, projectId: string) => {
-    return fetchWithAuth(`/threat-findings/${findingId}/approve?project_id=${projectId}`, {
+    return fetchWithAuth(`/threat-findings/${encodeURIComponent(findingId)}/approve?project_id=${encodeURIComponent(projectId)}`, {
       method: "POST",
     });
   },
 
   // Billing
   getBilling: async (orgId: string) => {
-    return fetchWithAuth(`/organizations/${orgId}/billing`);
+    return fetchWithAuth(`/organizations/${encodeURIComponent(orgId)}/billing`);
   },
 
   // Contact / Demo
@@ -206,26 +206,26 @@ export const api = {
     });
   },
 
-  reviewThreatLoopFinding: async (runId: string, status: "approved" | "rejected", notes?: string, reviewedBy = "Elena Vance") => {
+  reviewThreatLoopFinding: async (runId: string, status: "approved" | "rejected", notes?: string, reviewedBy?: string) => {
     return fetchWithAuth("/threatloop/review", {
       method: "POST",
       body: JSON.stringify({
         run_id: runId,
         review_status: status,
         review_notes: notes,
-        reviewed_by: reviewedBy
+        reviewed_by: reviewedBy,
       })
     });
   },
 
-  mapThreatLoopToTest: async (runId: string, projectId: string, templateId: string, approverName = "Elena Vance") => {
+  mapThreatLoopToTest: async (runId: string, projectId: string, templateId: string, approverName?: string) => {
     return fetchWithAuth("/threatloop/map", {
       method: "POST",
       body: JSON.stringify({
         run_id: runId,
         project_id: projectId,
         template_id: templateId,
-        approver_name: approverName
+        approver_name: approverName,
       })
     });
   },
@@ -265,20 +265,20 @@ export const api = {
   },
 
   getThreatLoopDriftStatus: async (orgId: string) => {
-    return fetchWithAuth(`/threatloop/drift/status?org_id=${orgId}`);
+    return fetchWithAuth(`/threatloop/drift/status?org_id=${encodeURIComponent(orgId)}`);
   },
 
   triggerThreatLoopDriftCheck: async (orgId: string) => {
-    return fetchWithAuth(`/threatloop/drift/check?org_id=${orgId}`, {
+    return fetchWithAuth(`/threatloop/drift/check?org_id=${encodeURIComponent(orgId)}`, {
       method: "POST"
     });
   },
 
   getThreatLoopRuns: async (orgId: string) => {
-    return fetchWithAuth(`/threatloop/runs?org_id=${orgId}`);
+    return fetchWithAuth(`/threatloop/runs?org_id=${encodeURIComponent(orgId)}`);
   },
 
   getThreatLoopRun: async (runId: string) => {
-    return fetchWithAuth(`/threatloop/runs/${runId}`);
+    return fetchWithAuth(`/threatloop/runs/${encodeURIComponent(runId)}`);
   },
 };

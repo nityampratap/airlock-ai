@@ -6,10 +6,21 @@ __pycache__/
 *$py.class
 *.db
 *.sqlite3
+.pytest_cache/
+
+# Secrets & Environment variables
+.env
+.env.*
+!.env.example
+*.key
+backend/keys/ed25519_private.pem
+backend/keys/*private*
 
 # Node & Next.js
 node_modules/
+frontend/node_modules/
 .next/
+frontend/.next/
 dist/
 build/
 .turbo/
@@ -17,8 +28,14 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# OS & Keys
+# Backups & Temporary files
+frontend-git-backup/
+*.bak
+*.swp
+*.swo
+
+# OS & Secrets
 .DS_Store
 Thumbs.db
-backend/keys/ed25519_private.pem
 sample_receipt.json
+

@@ -7,9 +7,11 @@ from typing import Dict, Any, Optional, AsyncGenerator, Tuple, List
 import httpx
 from pydantic import BaseModel, Field, ValidationError
 
+import html
+from urllib.parse import urlsplit
 from backend.app.core.config import settings
 
-# Approved public intelligence domains allowlist
+# Approved public intelligence domains allowlist for external research
 APPROVED_DOMAINS = {
     "owasp.org",
     "www.owasp.org",
@@ -19,8 +21,6 @@ APPROVED_DOMAINS = {
     "www.nist.gov",
     "cisa.gov",
     "www.cisa.gov",
-    "localhost",
-    "127.0.0.1"
 }
 
 # Curated reference sources
@@ -116,31 +116,60 @@ class TinyFishService:
         Returns: (is_approved, hostname, error_message)
         """
         try:
-            parsed = urlparse(url)
-            host = parsed.netloc.lower()
+            parsed = urlsplit(url)
+            host = (parsed.hostname or "").lower().rstrip(".")
+            if not host:
+                return False, "", "Malformed URL: missing hostname"
+
+            # Allow authorized staging target endpoint on localhost
+            if (host in ("localhost", "127.0.0.1") and parsed.path.startswith("/staging/")) or url.rstrip("/") == settings.STAGING_APP_URL.rstrip("/"):
+                return True, host, None
+
+            # Reject localhost and internal IP addresses for external threat discovery
+            if host in ("localhost", "127.0.0.1", "0.0.0.0", "::1") or host.startswith("169.254."):
+                return False, host, "Access to localhost or private metadata addresses is blocked."
+
+            if host in APPROVED_DOMAINS:
+                return True, host, None
+
+            # Check strict subdomain matching (e.g. sub.owasp.org)
+            for approved in APPROVED_DOMAINS:
+                if host.endswith(f".{approved}"):
+                    return True, host, None
+
+            return False, host, f"Domain '{host}' is not in approved public source allowlist."
+        except Exception as e:
+            return False, "", f"URL validation failed: {str(e)}"
+
+    @staticmethod
+    def is_staging_url_allowed(url: str) -> Tuple[bool, str, Optional[str]]:
+        """
+        Validates that a staging test URL specifically targets authorized staging environments.
+        """
+        try:
+            parsed = urlsplit(url)
+            host = (parsed.hostname or "").lower().rstrip(".")
             if not host:
                 return False, "", "Malformed URL: missing hostname"
             
-            # Remove port if present (e.g. localhost:3000 -> localhost)
-            hostname_clean = host.split(":")[0]
+            # Allow configured staging endpoint or local dev staging path
+            if host in ("localhost", "127.0.0.1") and parsed.path.startswith("/staging/"):
+                return True, host, None
+            
+            # Or matches configured STAGING_APP_URL
+            staging_parsed = urlsplit(settings.STAGING_APP_URL)
+            if host == (staging_parsed.hostname or "").lower():
+                return True, host, None
 
-            if hostname_clean in APPROVED_DOMAINS:
-                return True, hostname_clean, None
-
-            # Check subdomain matching (e.g. sub.owasp.org)
-            for approved in APPROVED_DOMAINS:
-                if hostname_clean.endswith(f".{approved}"):
-                    return True, hostname_clean, None
-
-            return False, hostname_clean, f"Domain '{hostname_clean}' is not in approved public source allowlist."
+            return False, host, f"Target URL '{url}' is not an authorized staging endpoint."
         except Exception as e:
-            return False, "", f"URL validation failed: {str(e)}"
+            return False, "", f"Staging URL validation failed: {str(e)}"
 
     @staticmethod
     def sanitize_untrusted_text(text: str) -> str:
         """
         Treats extracted webpage content as untrusted data.
-        Removes HTML script/iframe tags, strips dangerous shell execution metacharacters,
+        Removes HTML tags, escapes HTML entities, strips dangerous shell execution metacharacters,
         and neutralizes potential prompt injection wrappers.
         """
         if not text:
@@ -149,6 +178,9 @@ class TinyFishService:
         # Remove HTML tags
         cleaned = re.sub(r"<[^>]+>", "", text)
         
+        # Escape HTML entities to prevent Stored XSS
+        cleaned = html.escape(cleaned)
+
         # Neutralize common shell escape characters
         cleaned = re.sub(r"[`$(){}\[\]<>;|&]", "", cleaned)
 
@@ -375,7 +407,7 @@ class TinyFishService:
         and extracts the response to determine if the canary was leaked.
         """
         # Validate staging domain
-        is_approved, domain, err = cls.is_domain_approved(staging_url)
+        is_approved, domain, err = cls.is_staging_url_allowed(staging_url)
         if not is_approved:
             return {
                 "status": "FAILED",

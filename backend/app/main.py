@@ -18,19 +18,19 @@ app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,
     description="AIRLOCK AI — Enterprise AI Security Evaluation Assurance & Cryptographic Audit Broker API",
-    openapi_url=f"{settings.API_V1_STR}/openapi.json",
-    docs_url=f"{settings.API_V1_STR}/docs",
-    redoc_url=f"{settings.API_V1_STR}/redoc",
+    openapi_url=f"{settings.API_V1_STR}/openapi.json" if settings.DEBUG else None,
+    docs_url=f"{settings.API_V1_STR}/docs" if settings.DEBUG else None,
+    redoc_url=f"{settings.API_V1_STR}/redoc" if settings.DEBUG else None,
     lifespan=lifespan
 )
 
-# CORS
+# CORS — restrict to configured origins only
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=settings.BACKEND_CORS_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type"],
 )
 
 # Mount API
@@ -41,6 +41,7 @@ def root():
     return {
         "product": "AIRLOCK AI",
         "tagline": "Prove the test. Then trust the result.",
-        "api_docs": f"{settings.API_V1_STR}/docs",
+        "api_docs": f"{settings.API_V1_STR}/docs" if settings.DEBUG else "disabled",
         "status": "OPERATIONAL"
     }
+

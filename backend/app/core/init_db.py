@@ -12,16 +12,20 @@ from backend.app.services.threat_intel import threat_intel_service
 def init_db():
     Base.metadata.create_all(bind=engine)
     
-    # Auto-migrate any newly added columns to existing tables
+    # Auto-migrate any newly added columns to existing tables safely
+    ALLOWED_COLUMNS = {
+        "evidence_excerpt": "TEXT",
+        "suggested_defensive_control": "TEXT",
+        "source_domain": "VARCHAR(255)",
+        "tinyfish_task_id": "VARCHAR(255)",
+        "streaming_url": "VARCHAR(512)",
+        "raw_extraction": "JSON",
+    }
     with engine.connect() as conn:
-        for col_name, col_type in [
-            ("evidence_excerpt", "TEXT"),
-            ("suggested_defensive_control", "TEXT"),
-            ("source_domain", "VARCHAR(255)"),
-            ("tinyfish_task_id", "VARCHAR(255)"),
-            ("streaming_url", "VARCHAR(512)"),
-            ("raw_extraction", "JSON"),
-        ]:
+        for col_name, col_type in ALLOWED_COLUMNS.items():
+            # Validate column name is strictly alphanumeric/underscore
+            if not col_name.isidentifier():
+                continue
             try:
                 conn.execute(text(f"ALTER TABLE threat_findings ADD COLUMN {col_name} {col_type}"))
                 conn.commit()
@@ -37,11 +41,14 @@ def init_db():
 
         print("[*] Seeding AIRLOCK AI production-ready demonstration tenant...")
 
+        import os
+        demo_password = os.getenv("AIRLOCK_DEMO_PASSWORD", "AirlockSec2026!")
+
         # 1. Create Demo User
         demo_user = User(
             id="usr_airlock_secops_01",
             email="secops@airlock.ai",
-            hashed_password=get_password_hash("AirlockSec2026!"),
+            hashed_password=get_password_hash(demo_password),
             full_name="Elena Vance (Head of AI Security)",
             is_active=True,
             is_superuser=False

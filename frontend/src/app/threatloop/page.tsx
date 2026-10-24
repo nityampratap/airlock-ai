@@ -512,7 +512,7 @@ export default function ThreatLoopPage() {
                             src={streamingUrl}
                             title="TinyFish Browser Viewport"
                             className="w-full h-full border-0 pointer-events-none"
-                            sandbox="allow-scripts allow-same-origin"
+                            sandbox="allow-scripts"
                           />
                         </div>
                       </div>

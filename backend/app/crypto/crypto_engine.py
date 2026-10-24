@@ -15,6 +15,15 @@ class CryptoEngine:
         self._load_or_generate_keys()
 
     def _load_or_generate_keys(self):
+        import os
+        priv_env = os.getenv("ED25519_PRIVATE_KEY_PEM", "").strip()
+        pub_env = os.getenv("ED25519_PUBLIC_KEY_PEM", "").strip()
+
+        if priv_env and pub_env:
+            self.private_key = serialization.load_pem_private_key(priv_env.encode("utf-8"), password=None)
+            self.public_key = serialization.load_pem_public_key(pub_env.encode("utf-8"))
+            return
+
         if self.private_key_path.exists() and self.public_key_path.exists():
             with open(self.private_key_path, "rb") as f:
                 self.private_key = serialization.load_pem_private_key(f.read(), password=None)
@@ -38,6 +47,11 @@ class CryptoEngine:
                 f.write(priv_pem)
             with open(self.public_key_path, "wb") as f:
                 f.write(pub_pem)
+            if hasattr(os, "chmod"):
+                try:
+                    os.chmod(self.private_key_path, 0o600)
+                except OSError:
+                    pass
 
     @property
     def public_key_hex(self) -> str:

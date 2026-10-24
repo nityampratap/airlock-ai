@@ -8,7 +8,12 @@ from backend.app.services.drift_service import drift_detection_service
 from backend.app.crypto.crypto_engine import crypto_engine
 from backend.cli_verifier import verify_receipt
 
+from backend.app.core.security import create_access_token
+
 client = TestClient(app)
+# Authenticate client with demo user credentials for API calls
+demo_token = create_access_token(data={"sub": "usr_airlock_secops_01", "email": "secops@airlock.ai"})
+client.headers["Authorization"] = f"Bearer {demo_token}"
 
 def test_approved_domain_allowlist():
     """Verifies that only approved public intelligence sources are permitted."""

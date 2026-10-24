@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 from backend.app.core.database import get_db
 from backend.app.core.security import (
     verify_password, get_password_hash, create_access_token,
-    get_current_user, require_org_member
+    get_current_user, require_org_member, validate_password_strength
 )
 from backend.app.models.models import (
     User, Organization, OrganizationMember, Project, SecurityPolicy,
@@ -142,6 +142,11 @@ def register(req: RegisterRequest, db: Session = Depends(get_db)):
     if existing:
         raise HTTPException(status_code=400, detail="User with this email already exists")
 
+    # Validate password strength
+    is_valid, msg = validate_password_strength(req.password)
+    if not is_valid:
+        raise HTTPException(status_code=400, detail=msg)
+
     user = User(
         email=req.email,
         hashed_password=get_password_hash(req.password),
@@ -226,7 +231,7 @@ def get_me(current_user: User = Depends(get_current_user), db: Session = Depends
 
 # ----------------- ORGANIZATIONS -----------------
 @api_router.get("/organizations/{org_id}/dashboard")
-def get_org_dashboard(org_id: str, db: Session = Depends(get_db)):
+def get_org_dashboard(org_id: str, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     org = db.query(Organization).filter(Organization.id == org_id).first()
     if not org:
         raise HTTPException(status_code=404, detail="Organization not found")
@@ -289,7 +294,7 @@ def get_org_dashboard(org_id: str, db: Session = Depends(get_db)):
 
 # ----------------- PROJECTS & TEST CASES -----------------
 @api_router.get("/organizations/{org_id}/projects")
-def get_org_projects(org_id: str, db: Session = Depends(get_db)):
+def get_org_projects(org_id: str, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     projects = db.query(Project).filter(Project.organization_id == org_id).all()
     out = []
     for p in projects:
@@ -308,7 +313,7 @@ def get_org_projects(org_id: str, db: Session = Depends(get_db)):
     return out
 
 @api_router.get("/projects/{project_id}/test-cases")
-def get_project_test_cases(project_id: str, db: Session = Depends(get_db)):
+def get_project_test_cases(project_id: str, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     tcs = db.query(TestCase).filter(TestCase.project_id == project_id).all()
     return [{
         "id": tc.id,
@@ -324,7 +329,7 @@ def get_project_test_cases(project_id: str, db: Session = Depends(get_db)):
 
 # ----------------- POLICIES -----------------
 @api_router.get("/organizations/{org_id}/policies")
-def get_org_policies(org_id: str, db: Session = Depends(get_db)):
+def get_org_policies(org_id: str, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     policies = db.query(SecurityPolicy).filter(SecurityPolicy.organization_id == org_id).all()
     return [{
         "id": p.id,
@@ -343,7 +348,7 @@ def get_org_policies(org_id: str, db: Session = Depends(get_db)):
     } for p in policies]
 
 @api_router.post("/organizations/{org_id}/policies")
-def update_or_create_policy(org_id: str, req: PolicyUpdateRequest, db: Session = Depends(get_db)):
+def update_or_create_policy(org_id: str, req: PolicyUpdateRequest, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     existing = db.query(SecurityPolicy).filter(SecurityPolicy.organization_id == org_id).first()
     if existing:
         existing.name = req.name
@@ -375,7 +380,7 @@ def update_or_create_policy(org_id: str, req: PolicyUpdateRequest, db: Session =
 
 # ----------------- EVALUATION ENGINE & STUDIO -----------------
 @api_router.post("/evaluations/run")
-def execute_evaluation(req: RunEvalRequest, db: Session = Depends(get_db)):
+def execute_evaluation(req: RunEvalRequest, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     project = db.query(Project).filter(Project.id == req.project_id).first()
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
@@ -418,7 +423,7 @@ def execute_evaluation(req: RunEvalRequest, db: Session = Depends(get_db)):
     }
 
 @api_router.get("/evaluations/{eval_id}")
-def get_evaluation_details(eval_id: str, db: Session = Depends(get_db)):
+def get_evaluation_details(eval_id: str, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     eval_run = db.query(EvaluationRun).filter(EvaluationRun.id == eval_id).first()
     if not eval_run:
         raise HTTPException(status_code=404, detail="Evaluation run not found")
@@ -465,7 +470,7 @@ def get_evaluation_details(eval_id: str, db: Session = Depends(get_db)):
 
 # ----------------- EVIDENCE VAULT & RECEIPTS -----------------
 @api_router.get("/receipts/{eval_id}/download")
-def download_receipt(eval_id: str, db: Session = Depends(get_db)):
+def download_receipt(eval_id: str, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     eval_run = db.query(EvaluationRun).filter(EvaluationRun.id == eval_id).first()
     if not eval_run or not eval_run.signed_receipt:
         raise HTTPException(status_code=404, detail="Receipt not found for this evaluation")
@@ -487,7 +492,7 @@ def verify_receipt_endpoint(req: VerifyReceiptRequest):
 
 # ----------------- THREAT INTEL -----------------
 @api_router.get("/organizations/{org_id}/threat-findings")
-def get_threat_findings(org_id: str, db: Session = Depends(get_db)):
+def get_threat_findings(org_id: str, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     findings = threat_intel_service.sync_findings_for_org(db, org_id)
     return [{
         "id": f.id,
@@ -506,12 +511,13 @@ def get_threat_findings(org_id: str, db: Session = Depends(get_db)):
 def approve_threat_finding(
     finding_id: str,
     project_id: str,
-    approver_name: str = "Elena Vance",
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     try:
+        approver = current_user.full_name or current_user.email
         tc = threat_intel_service.approve_finding_and_create_test_case(
-            db, finding_id, project_id, approver_name
+            db, finding_id, project_id, approver
         )
         return {
             "status": "approved",
@@ -523,7 +529,7 @@ def approve_threat_finding(
 
 # ----------------- BILLING & TIERS -----------------
 @api_router.get("/organizations/{org_id}/billing")
-def get_org_billing(org_id: str, db: Session = Depends(get_db)):
+def get_org_billing(org_id: str, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     org = db.query(Organization).filter(Organization.id == org_id).first()
     if not org:
         raise HTTPException(status_code=404, detail="Organization not found")
@@ -609,6 +615,7 @@ def get_threatloop_templates():
 @api_router.post("/threatloop/discover/stream")
 async def stream_threatloop_discovery(
     req: ThreatLoopDiscoverRequest,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     # Enforce domain allowlist check immediately
@@ -711,6 +718,7 @@ async def stream_threatloop_discovery(
 @api_router.post("/threatloop/discover/sync")
 async def sync_threatloop_discovery(
     req: ThreatLoopDiscoverRequest,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     is_valid, domain, err = tinyfish_service.is_domain_approved(req.url)
@@ -807,14 +815,16 @@ async def sync_threatloop_discovery(
 @api_router.post("/threatloop/review")
 def review_threatloop_finding(
     req: ThreatLoopReviewRequest,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     run = db.query(ThreatLoopRun).filter(ThreatLoopRun.id == req.run_id).first()
     if not run:
         raise HTTPException(status_code=404, detail="ThreatLoop run not found")
 
+    reviewer = current_user.full_name or current_user.email
     run.review_status = req.review_status
-    run.reviewed_by = req.reviewed_by
+    run.reviewed_by = reviewer
     run.review_notes = req.review_notes
 
     if run.finding_id:
@@ -833,6 +843,7 @@ def review_threatloop_finding(
 @api_router.post("/threatloop/map")
 def map_threatloop_to_test(
     req: ThreatLoopMapRequest,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     run = db.query(ThreatLoopRun).filter(ThreatLoopRun.id == req.run_id).first()
@@ -842,13 +853,14 @@ def map_threatloop_to_test(
     if not run.finding_id:
         raise HTTPException(status_code=400, detail="ThreatLoop run has no associated finding")
 
+    approver = current_user.full_name or current_user.email
     # Map to safe template and create test case
     test_case = threat_mapping_service.create_approved_test_case_from_template(
         db=db,
         project_id=req.project_id,
         finding_id=run.finding_id,
         template_id=req.template_id,
-        approver_name=req.approver_name or "Elena Vance"
+        approver_name=approver
     )
 
     run.template_id = req.template_id
@@ -869,6 +881,7 @@ def map_threatloop_to_test(
 @api_router.post("/threatloop/evaluate")
 def evaluate_threatloop_run(
     req: ThreatLoopEvalRequest,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     run = db.query(ThreatLoopRun).filter(ThreatLoopRun.id == req.run_id).first()
@@ -948,6 +961,7 @@ def evaluate_threatloop_run(
 @api_router.post("/threatloop/browser-test")
 async def run_threatloop_browser_test(
     req: ThreatLoopBrowserTestRequest,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     # Execute browser agent against authorized staging
@@ -1009,7 +1023,7 @@ def staging_chatbot_chat(req: StagingChatRequest):
         }
 
 @api_router.get("/threatloop/drift/status")
-async def get_threatloop_drift_status(org_id: str, db: Session = Depends(get_db)):
+async def get_threatloop_drift_status(org_id: str, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     results = await drift_detection_service.run_drift_scan_for_org(db, org_id)
     return {
         "status": "success",
@@ -1018,7 +1032,7 @@ async def get_threatloop_drift_status(org_id: str, db: Session = Depends(get_db)
     }
 
 @api_router.post("/threatloop/drift/check")
-async def trigger_threatloop_drift_check(org_id: str, db: Session = Depends(get_db)):
+async def trigger_threatloop_drift_check(org_id: str, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     results = await drift_detection_service.run_drift_scan_for_org(db, org_id)
     return {
         "status": "success",
@@ -1027,7 +1041,7 @@ async def trigger_threatloop_drift_check(org_id: str, db: Session = Depends(get_
     }
 
 @api_router.get("/threatloop/runs")
-def list_threatloop_runs(org_id: str, db: Session = Depends(get_db)):
+def list_threatloop_runs(org_id: str, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     runs = db.query(ThreatLoopRun).filter(ThreatLoopRun.organization_id == org_id).order_by(ThreatLoopRun.created_at.desc()).all()
     out = []
     for r in runs:
@@ -1052,7 +1066,7 @@ def list_threatloop_runs(org_id: str, db: Session = Depends(get_db)):
     return out
 
 @api_router.get("/threatloop/runs/{run_id}")
-def get_threatloop_run(run_id: str, db: Session = Depends(get_db)):
+def get_threatloop_run(run_id: str, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     run = db.query(ThreatLoopRun).filter(ThreatLoopRun.id == run_id).first()
     if not run:
         raise HTTPException(status_code=404, detail="ThreatLoop run not found")
