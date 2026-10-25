@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import {
   RefreshCw,
@@ -25,7 +26,8 @@ import {
   Check,
   Globe,
   Radio,
-  Cpu
+  Cpu,
+  CloudSun
 } from "lucide-react";
 import { AppShell } from "@/components/dashboard/AppShell";
 import { api, getCurrentOrg } from "@/lib/api";
@@ -286,34 +288,65 @@ export default function ThreatLoopPage() {
   return (
     <AppShell>
       <div className="space-y-8 max-w-7xl mx-auto pb-16">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-6 border-b border-white/[0.08]">
-          <div>
-            <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#86A8FF]/20 to-[#A5A0F4]/10 border border-[#86A8FF]/30 flex items-center justify-center text-[#86A8FF] shadow-[0_0_20px_rgba(134,168,255,0.15)]">
-                <RefreshCw className="w-5 h-5 text-[#86A8FF]" />
-              </div>
-              <h1 className="text-2xl font-bold tracking-tight text-[#F4F6FB] flex items-center gap-3">
-                AIRLOCK ThreatLoop
-                <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-[#8CA9FF]/15 text-[#8CA9FF] border border-[#8CA9FF]/40 flex items-center gap-1.5 shadow-[0_0_12px_rgba(140,169,255,0.2)]">
-                  <span className="w-2 h-2 rounded-full bg-[#75D6B1] animate-pulse"></span>
-                  POWERED BY TINYFISH
-                </span>
-              </h1>
-            </div>
-            <p className="mt-1.5 text-sm text-white/60">
-              Convert live public AI-security intelligence into approved, repeatable security evaluations with independently verifiable evidence receipts via TinyFish web agents.
-            </p>
-          </div>
+        {/* ═══ SCENIC BANNER WITH FLOATING WIDGET (WINDOWS LOCKSCREEN AESTHETIC) ═══ */}
+        <div className="relative rounded-2xl overflow-hidden border border-[#E2E8F0] shadow-sm">
+          <div className="relative h-60 sm:h-64 w-full overflow-hidden">
+            <Image
+              src="/assets/scenic_landscape.jpg"
+              alt="Ona Coastal Norway Scenic Landscape"
+              fill
+              priority
+              className="object-cover object-center filter brightness-[0.96] contrast-[1.02]"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-white via-white/40 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-emerald-950/20 via-transparent to-transparent" />
 
-          {/* Navigation Mode Tabs */}
-          <div className="flex items-center p-1.5 rounded-xl bg-[#121C30] border border-white/[0.08] flex-wrap gap-1.5">
+            {/* Location Tag */}
+            <div className="absolute top-4 left-4 z-10 flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/80 backdrop-blur-md border border-white/80 shadow-sm text-xs text-[#1E293B]">
+              <span className="w-2 h-2 rounded-full bg-[#16A34A] animate-pulse" />
+              <span className="font-medium">ThreatLoop Intelligence Lab • Powered by TinyFish Web Agents</span>
+            </div>
+
+            {/* Floating Status Widget (Lockscreen Picture Match) */}
+            <div className="absolute bottom-4 right-4 z-10 max-w-xs w-full p-3.5 rounded-xl bg-white/85 backdrop-blur-md border border-white/70 shadow-lg text-[#1E293B] space-y-1.5">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-semibold flex items-center gap-1.5 text-[#15803D]">
+                  <CloudSun className="w-4 h-4 text-[#16A34A]" />
+                  Threat Weather: Monitored
+                </span>
+                <span className="text-[10px] font-mono bg-[#DCFCE7] text-[#15803D] px-2 py-0.5 rounded-full font-bold">
+                  Active Sync
+                </span>
+              </div>
+              <div className="text-xs text-[#475569] leading-tight">
+                Universal Open-Source Guidance Ingestion active. Any public URL supported.
+              </div>
+            </div>
+
+            {/* Banner Title */}
+            <div className="absolute bottom-4 left-4 z-10 max-w-lg">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-[#F0FDF4] border border-[#BBF7D0] text-[#15803D] text-[11px] font-semibold mb-1">
+                Autonomous Security Intelligence
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-[#1E293B] tracking-tight">
+                AIRLOCK ThreatLoop
+              </h1>
+              <p className="text-xs sm:text-sm text-[#475569] mt-0.5">
+                Convert live open-source security intelligence into approved, repeatable evaluations with Ed25519 evidence receipts.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Navigation Mode Tabs */}
+        <div className="flex items-center justify-between p-2 rounded-xl bg-white border border-[#E2E8F0] shadow-sm flex-wrap gap-2">
+          <div className="flex items-center flex-wrap gap-1.5">
             <button
               onClick={() => setActiveTab("loop")}
               className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
                 activeTab === "loop"
-                  ? "bg-[#8CA9FF] text-[#0B1220] shadow-md"
-                  : "text-white/70 hover:text-white hover:bg-white/[0.04]"
+                  ? "bg-[#16A34A] text-white shadow-sm"
+                  : "text-[#64748B] hover:text-[#1E293B] hover:bg-[#F8FAFB]"
               }`}
             >
               <span>🐟</span> TinyFish Discovery Loop
@@ -322,8 +355,8 @@ export default function ThreatLoopPage() {
               onClick={() => setActiveTab("commercelab")}
               className={`px-3.5 py-2 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${
                 activeTab === "commercelab"
-                  ? "bg-[#8CA9FF] text-[#0B1220] shadow-md font-semibold"
-                  : "text-white/70 hover:text-white hover:bg-white/[0.04]"
+                  ? "bg-[#16A34A] text-white shadow-sm font-semibold"
+                  : "text-[#64748B] hover:text-[#1E293B] hover:bg-[#F8FAFB]"
               }`}
             >
               <span>🛒</span> Refund Security Lab 2.0
@@ -332,8 +365,8 @@ export default function ThreatLoopPage() {
               onClick={() => setActiveTab("browser_test")}
               className={`px-3.5 py-2 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${
                 activeTab === "browser_test"
-                  ? "bg-[#8CA9FF] text-[#0B1220] shadow-md font-semibold"
-                  : "text-white/70 hover:text-white hover:bg-white/[0.04]"
+                  ? "bg-[#16A34A] text-white shadow-sm font-semibold"
+                  : "text-[#64748B] hover:text-[#1E293B] hover:bg-[#F8FAFB]"
               }`}
             >
               <span>🌐</span> TinyFish Staging Agent
@@ -342,12 +375,16 @@ export default function ThreatLoopPage() {
               onClick={() => setActiveTab("drift")}
               className={`px-3.5 py-2 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${
                 activeTab === "drift"
-                  ? "bg-[#8CA9FF] text-[#0B1220] shadow-md font-semibold"
-                  : "text-white/70 hover:text-white hover:bg-white/[0.04]"
+                  ? "bg-[#16A34A] text-white shadow-sm font-semibold"
+                  : "text-[#64748B] hover:text-[#1E293B] hover:bg-[#F8FAFB]"
               }`}
             >
               <span>📊</span> Upstream Drift
             </button>
+          </div>
+
+          <div className="text-xs text-[#94A3B8] font-mono pr-2 hidden sm:block">
+            10 Automated Test Fixtures Active
           </div>
         </div>
 
@@ -376,27 +413,27 @@ export default function ThreatLoopPage() {
                   onClick={() => setCurrentStep(item.step as any)}
                   className={`p-3.5 rounded-xl border text-left transition-all ${
                     currentStep === item.step
-                      ? "bg-[#121C30] border-[#86A8FF] shadow-[0_0_15px_rgba(134,168,255,0.1)]"
+                      ? "bg-[#F0FDF4] border-[#16A34A] shadow-sm"
                       : currentStep > item.step
-                      ? "bg-[#0E1626] border-[#68CFA9]/40 opacity-90"
-                      : "bg-[#0E1626]/50 border-white/[0.06] opacity-60"
+                      ? "bg-white border-[#16A34A] opacity-90"
+                      : "bg-white/50 border-[#E2E8F0] opacity-60"
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
                     <span
                       className={`text-xs font-bold font-mono ${
                         currentStep === item.step
-                          ? "text-[#86A8FF]"
+                          ? "text-[#16A34A]"
                           : currentStep > item.step
-                          ? "text-[#68CFA9]"
-                          : "text-white/40"
+                          ? "text-[#16A34A]"
+                          : "text-[#94A3B8]"
                       }`}
                     >
                       {item.label}
                     </span>
-                    {currentStep > item.step && <CheckCircle2 className="w-3.5 h-3.5 text-[#68CFA9]" />}
+                    {currentStep > item.step && <CheckCircle2 className="w-3.5 h-3.5 text-[#16A34A]" />}
                   </div>
-                  <div className="text-[11px] text-white/50">{item.sub}</div>
+                  <div className="text-[11px] text-[#94A3B8]">{item.sub}</div>
                 </button>
               ))}
             </div>
@@ -406,13 +443,13 @@ export default function ThreatLoopPage() {
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 <div className="lg:col-span-7 space-y-6">
                   {/* Source Selection Card */}
-                  <div className="p-6 rounded-2xl bg-[#0E1626] border border-white/[0.08] space-y-4">
+                  <div className="p-6 rounded-2xl bg-white border border-[#E2E8F0] space-y-4">
                     <div className="flex items-center justify-between">
-                      <div className="text-xs font-mono uppercase tracking-wider text-[#86A8FF] font-semibold flex items-center gap-1.5">
+                      <div className="text-xs font-mono uppercase tracking-wider text-[#16A34A] font-semibold flex items-center gap-1.5">
                         <Globe className="w-3.5 h-3.5" />
                         Universal Open-Source Security Guidance Ingestion
                       </div>
-                      <span className="text-[11px] text-[#75D6B1] font-mono flex items-center gap-1">
+                      <span className="text-[11px] text-[#16A34A] font-mono flex items-center gap-1">
                         <span className="w-1.5 h-1.5 rounded-full bg-[#75D6B1] animate-pulse"></span>
                         Any Public Open-Source URL Supported
                       </span>
@@ -425,24 +462,24 @@ export default function ThreatLoopPage() {
                           onClick={() => handleSourceSelect(src.id)}
                           className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
                             selectedSource === src.id
-                              ? "bg-[#121C30] border-[#86A8FF]/60 shadow-[0_0_12px_rgba(134,168,255,0.15)]"
-                              : "bg-[#0B1220]/60 border-white/[0.06] hover:border-white/20"
+                              ? "bg-[#F0FDF4] border-[#16A34A] shadow-sm"
+                              : "bg-[#F8FAFB]/60 border-[#E2E8F0] hover:border-[#CBD5E1]"
                           }`}
                         >
                           <div className="flex items-center justify-between mb-1">
-                            <span className="text-xs font-bold text-[#F4F6FB] flex items-center gap-2">
+                            <span className="text-xs font-bold text-[#1E293B] flex items-center gap-2">
                               {src.name}
                               {src.recommended && (
-                                <span className="text-[10px] bg-[#68CFA9]/10 text-[#68CFA9] border border-[#68CFA9]/30 px-1.5 py-0.2 rounded font-mono">
+                                <span className="text-[10px] bg-[#F0FDF4] text-[#16A34A] border border-[#BBF7D0]/30 px-1.5 py-0.2 rounded font-mono">
                                   RECOMMENDED
                                 </span>
                               )}
                             </span>
-                            <span className="text-[11px] font-mono text-[#86A8FF] bg-[#86A8FF]/10 px-1.5 py-0.5 rounded border border-[#86A8FF]/20">
+                            <span className="text-[11px] font-mono text-[#16A34A] bg-[#F0FDF4] px-1.5 py-0.5 rounded border border-[#BBF7D0]">
                               {src.domain}
                             </span>
                           </div>
-                          <div className="text-[11px] text-white/50">{src.category}</div>
+                          <div className="text-[11px] text-[#94A3B8]">{src.category}</div>
                         </div>
                       ))}
 
@@ -451,19 +488,19 @@ export default function ThreatLoopPage() {
                         onClick={() => handleSourceSelect("custom")}
                         className={`p-3.5 rounded-xl border border-dashed cursor-pointer transition-all ${
                           selectedSource === "custom"
-                            ? "bg-[#121C30] border-[#85D8E7] shadow-[0_0_12px_rgba(133,216,231,0.2)]"
-                            : "bg-[#0B1220]/40 border-white/20 hover:border-[#85D8E7]/50"
+                            ? "bg-[#F0FDF4] border-[#99F6E4] shadow-sm"
+                            : "bg-[#F8FAFB]/40 border-[#CBD5E1] hover:border-[#99F6E4]/50"
                         }`}
                       >
                         <div className="flex items-center justify-between mb-1">
-                          <span className="text-xs font-bold text-[#85D8E7] flex items-center gap-2">
+                          <span className="text-xs font-bold text-[#0D9488] flex items-center gap-2">
                             <span>🔗</span> Custom Open-Source Guidance URL
                           </span>
-                          <span className="text-[10px] font-mono text-[#85D8E7] bg-[#85D8E7]/10 px-1.5 py-0.5 rounded border border-[#85D8E7]/30">
+                          <span className="text-[10px] font-mono text-[#0D9488] bg-[#F0FDFA] px-1.5 py-0.5 rounded border border-[#99F6E4]/30">
                             ANY OPEN-SOURCE URL
                           </span>
                         </div>
-                        <div className="text-[11px] text-white/60">
+                        <div className="text-[11px] text-[#64748B]">
                           Enter any open-source security advisory, GitHub repo, CISA principle, academic paper, or framework guidance URL.
                         </div>
                       </div>
@@ -472,10 +509,10 @@ export default function ThreatLoopPage() {
                     {/* Target URL */}
                     <div className="space-y-1.5">
                       <div className="flex items-center justify-between">
-                        <label className="text-xs text-white/70 font-mono">
+                        <label className="text-xs text-[#1E293B]/70 font-mono">
                           Target Open-Source Guidance URL
                         </label>
-                        <span className="text-[10px] font-mono text-[#86A8FF]">
+                        <span className="text-[10px] font-mono text-[#16A34A]">
                           Public web &amp; repository allowlist
                         </span>
                       </div>
@@ -484,23 +521,23 @@ export default function ThreatLoopPage() {
                         value={targetUrl}
                         onChange={(e) => handleCustomUrlChange(e.target.value)}
                         placeholder="https://www.cisa.gov/..., https://github.com/..., https://arxiv.org/..., or any open-source URL"
-                        className="w-full bg-[#0B1220] border border-white/[0.1] rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-[#86A8FF] placeholder:text-white/30"
+                        className="w-full bg-[#F8FAFB] border border-[#E2E8F0] rounded-xl px-3 py-2 text-xs font-mono text-[#1E293B] focus:outline-none focus:border-[#16A34A] placeholder:text-[#1E293B]/30"
                       />
-                      <p className="text-[11px] text-white/40">
+                      <p className="text-[11px] text-[#94A3B8]">
                         Supports CISA guidelines, GitHub advisories, OWASP standards, MITRE matrices, NIST frameworks, arXiv research, or any public open-source URL.
                       </p>
                     </div>
 
                     {/* Goal Instructions */}
                     <div className="space-y-1.5">
-                      <label className="text-xs text-white/60 font-mono">
+                      <label className="text-xs text-[#64748B] font-mono">
                         TinyFish Web Agent Goal Directive (Schema Constraints Required)
                       </label>
                       <textarea
                         rows={3}
                         value={goal}
                         onChange={(e) => setGoal(e.target.value)}
-                        className="w-full bg-[#0B1220] border border-white/[0.1] rounded-xl p-3 text-xs font-mono text-white/90 focus:outline-none focus:border-[#86A8FF] leading-relaxed"
+                        className="w-full bg-[#F8FAFB] border border-[#E2E8F0] rounded-xl p-3 text-xs font-mono text-[#1E293B]/90 focus:outline-none focus:border-[#16A34A] leading-relaxed"
                       />
                     </div>
 
@@ -508,7 +545,7 @@ export default function ThreatLoopPage() {
                     <button
                       onClick={handleStartDiscovery}
                       disabled={isDiscovering}
-                      className="w-full h-11 rounded-xl bg-gradient-to-r from-[#86A8FF] to-[#A5A0F4] hover:from-[#7598EF] hover:to-[#948FE4] text-[#0B1220] font-bold text-xs flex items-center justify-center gap-2 transition-all disabled:opacity-40 shadow-lg shadow-[#86A8FF]/20"
+                      className="w-full h-11 rounded-xl bg-[#16A34A] hover:bg-[#15803D] text-[#1E293B] font-bold text-xs flex items-center justify-center gap-2 transition-all disabled:opacity-40 shadow-sm"
                     >
                       {isDiscovering ? (
                         <>
@@ -527,15 +564,15 @@ export default function ThreatLoopPage() {
 
                 {/* Discovery Output & Terminal Logs */}
                 <div className="lg:col-span-5 space-y-4">
-                  <div className="p-5 rounded-2xl bg-[#0E1626] border border-white/[0.08] flex flex-col h-[460px]">
-                    <div className="flex items-center justify-between pb-3 border-b border-white/[0.06] mb-3">
+                  <div className="p-5 rounded-2xl bg-white border border-[#E2E8F0] flex flex-col h-[460px]">
+                    <div className="flex items-center justify-between pb-3 border-b border-[#E2E8F0] mb-3">
                       <div className="flex items-center gap-2">
-                        <Terminal className="w-4 h-4 text-[#86A8FF]" />
-                        <span className="text-xs font-mono font-semibold text-white/80">
+                        <Terminal className="w-4 h-4 text-[#16A34A]" />
+                        <span className="text-xs font-mono font-semibold text-[#1E293B]">
                           TinyFish Real-Time Agent Stream
                         </span>
                       </div>
-                      <span className="text-[10px] font-mono text-white/40">
+                      <span className="text-[10px] font-mono text-[#94A3B8]">
                         {isDiscovering ? "SSE STREAMING ACTIVE" : "IDLE"}
                       </span>
                     </div>
@@ -543,10 +580,10 @@ export default function ThreatLoopPage() {
                     {/* Log Terminal */}
                     <div className="flex-1 overflow-y-auto space-y-2 font-mono text-[11px] pr-1">
                       {streamLogs.length === 0 && !isDiscovering && (
-                        <div className="h-full flex flex-col items-center justify-center text-center text-white/30 p-6">
-                          <Radio className="w-8 h-8 mb-2 opacity-40 text-[#86A8FF]" />
+                        <div className="h-full flex flex-col items-center justify-center text-center text-[#1E293B]/30 p-6">
+                          <Radio className="w-8 h-8 mb-2 opacity-40 text-[#16A34A]" />
                           <p>Awaiting agent dispatch.</p>
-                          <p className="text-[10px] mt-1 text-white/20">
+                          <p className="text-[10px] mt-1 text-[#1E293B]/20">
                             TinyFish will browse the approved source, extract risk parameters, and return validated JSON.
                           </p>
                         </div>
@@ -557,15 +594,15 @@ export default function ThreatLoopPage() {
                           key={i}
                           className={`p-2 rounded-lg border leading-relaxed ${
                             log.type === "success"
-                              ? "bg-[#68CFA9]/10 border-[#68CFA9]/30 text-[#68CFA9]"
+                              ? "bg-[#F0FDF4] border-[#BBF7D0]/30 text-[#16A34A]"
                               : log.type === "error"
-                              ? "bg-[#E5838F]/10 border-[#E5838F]/30 text-[#E5838F]"
+                              ? "bg-[#FEF2F2] border-[#FECACA]/30 text-[#DC2626]"
                               : log.type === "started"
-                              ? "bg-[#86A8FF]/10 border-[#86A8FF]/30 text-[#86A8FF]"
-                              : "bg-[#121C30]/50 border-white/[0.04] text-white/70"
+                              ? "bg-[#F0FDF4] border-[#BBF7D0] text-[#16A34A]"
+                              : "bg-[#F0FDF4]/50 border-[#E2E8F0] text-[#1E293B]/70"
                           }`}
                         >
-                          <span className="text-white/30 mr-2">[{log.time}]</span>
+                          <span className="text-[#1E293B]/30 mr-2">[{log.time}]</span>
                           {log.text}
                         </div>
                       ))}
@@ -573,21 +610,21 @@ export default function ThreatLoopPage() {
 
                     {/* TinyFish Streaming URL Viewport Preview */}
                     {streamingUrl && (
-                      <div className="mt-3 pt-3 border-t border-white/[0.06]">
-                        <div className="flex items-center justify-between text-[11px] font-mono text-white/50 mb-1.5">
-                          <span className="flex items-center gap-1.5 text-[#86A8FF]">
+                      <div className="mt-3 pt-3 border-t border-[#E2E8F0]">
+                        <div className="flex items-center justify-between text-[11px] font-mono text-[#94A3B8] mb-1.5">
+                          <span className="flex items-center gap-1.5 text-[#16A34A]">
                             <Eye className="w-3.5 h-3.5" /> Live Agent Viewport
                           </span>
                           <a
                             href={streamingUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="hover:text-white flex items-center gap-1 text-[10px]"
+                            className="hover:text-[#1E293B] flex items-center gap-1 text-[10px]"
                           >
                             Open Externally <ExternalLink className="w-2.5 h-2.5" />
                           </a>
                         </div>
-                        <div className="h-28 rounded-xl overflow-hidden border border-white/[0.08] bg-[#0B1220] flex items-center justify-center text-xs text-white/40">
+                        <div className="h-28 rounded-xl overflow-hidden border border-[#E2E8F0] bg-[#F8FAFB] flex items-center justify-center text-xs text-[#94A3B8]">
                           <iframe
                             src={streamingUrl}
                             title="TinyFish Browser Viewport"
@@ -604,19 +641,19 @@ export default function ThreatLoopPage() {
 
             {/* STEP 2: FINDING REVIEW */}
             {currentStep === 2 && extractedFinding && (
-              <div className="p-6 rounded-2xl bg-[#0E1626] border border-white/[0.08] space-y-6">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-white/[0.06]">
+              <div className="p-6 rounded-2xl bg-white border border-[#E2E8F0] space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-[#E2E8F0]">
                   <div>
-                    <span className="text-xs font-mono uppercase tracking-wider text-[#86A8FF]">
+                    <span className="text-xs font-mono uppercase tracking-wider text-[#16A34A]">
                       Threat Finding Inspection & Validation
                     </span>
-                    <h2 className="text-lg font-bold text-white mt-1">{extractedFinding.title}</h2>
+                    <h2 className="text-lg font-bold text-[#1E293B] mt-1">{extractedFinding.title}</h2>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-mono px-2.5 py-1 rounded-md bg-[#E5838F]/15 border border-[#E5838F]/30 text-[#E5838F] font-bold">
+                    <span className="text-xs font-mono px-2.5 py-1 rounded-md bg-[#FEF2F2] border border-[#FECACA]/30 text-[#DC2626] font-bold">
                       SEVERITY: {extractedFinding.severity || "HIGH"}
                     </span>
-                    <span className="text-xs font-mono px-2.5 py-1 rounded-md bg-[#68CFA9]/15 border border-[#68CFA9]/30 text-[#68CFA9]">
+                    <span className="text-xs font-mono px-2.5 py-1 rounded-md bg-[#F0FDF4] border border-[#BBF7D0]/30 text-[#16A34A]">
                       SCHEMA: VALID
                     </span>
                   </div>
@@ -624,11 +661,11 @@ export default function ThreatLoopPage() {
 
                 {/* Validation Badges */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                  <div className="p-3.5 rounded-xl bg-[#121C30] border border-[#68CFA9]/30 flex items-center gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-[#68CFA9] shrink-0" />
+                  <div className="p-3.5 rounded-xl bg-[#F0FDF4] border border-[#BBF7D0]/30 flex items-center gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-[#16A34A] shrink-0" />
                     <div>
-                      <div className="text-[11px] font-mono text-white/50">Verified Source Domain</div>
-                      <div className="text-xs font-semibold text-[#68CFA9] truncate">
+                      <div className="text-[11px] font-mono text-[#94A3B8]">Verified Source Domain</div>
+                      <div className="text-xs font-semibold text-[#16A34A] truncate">
                         {(() => {
                           try {
                             const u = new URL(extractedFinding.source_url || targetUrl);
@@ -641,19 +678,19 @@ export default function ThreatLoopPage() {
                     </div>
                   </div>
 
-                  <div className="p-3.5 rounded-xl bg-[#121C30] border border-[#68CFA9]/30 flex items-center gap-2.5">
-                    <FileCheck className="w-4 h-4 text-[#68CFA9] shrink-0" />
+                  <div className="p-3.5 rounded-xl bg-[#F0FDF4] border border-[#BBF7D0]/30 flex items-center gap-2.5">
+                    <FileCheck className="w-4 h-4 text-[#16A34A] shrink-0" />
                     <div>
-                      <div className="text-[11px] font-mono text-white/50">Strict JSON Schema</div>
-                      <div className="text-xs font-semibold text-[#68CFA9]">All 6 Key Fields Confirmed</div>
+                      <div className="text-[11px] font-mono text-[#94A3B8]">Strict JSON Schema</div>
+                      <div className="text-xs font-semibold text-[#16A34A]">All 6 Key Fields Confirmed</div>
                     </div>
                   </div>
 
-                  <div className="p-3.5 rounded-xl bg-[#121C30] border border-[#86A8FF]/30 flex items-center gap-2.5">
-                    <ShieldCheck className="w-4 h-4 text-[#86A8FF] shrink-0" />
+                  <div className="p-3.5 rounded-xl bg-[#F0FDF4] border border-[#BBF7D0] flex items-center gap-2.5">
+                    <ShieldCheck className="w-4 h-4 text-[#16A34A] shrink-0" />
                     <div>
-                      <div className="text-[11px] font-mono text-white/50">Untrusted Content Guard</div>
-                      <div className="text-xs font-semibold text-[#86A8FF]">HTML/Script Tokens Sanitized</div>
+                      <div className="text-[11px] font-mono text-[#94A3B8]">Untrusted Content Guard</div>
+                      <div className="text-xs font-semibold text-[#16A34A]">HTML/Script Tokens Sanitized</div>
                     </div>
                   </div>
                 </div>
@@ -661,35 +698,35 @@ export default function ThreatLoopPage() {
                 {/* Excerpt and Suggested Control */}
                 <div className="space-y-4">
                   <div>
-                    <div className="text-xs font-mono text-white/50 mb-1">Extracted Evidence Excerpt</div>
-                    <div className="p-4 rounded-xl bg-[#0B1220] border border-white/[0.08] text-xs font-mono text-white/80 leading-relaxed">
+                    <div className="text-xs font-mono text-[#94A3B8] mb-1">Extracted Evidence Excerpt</div>
+                    <div className="p-4 rounded-xl bg-[#F8FAFB] border border-[#E2E8F0] text-xs font-mono text-[#1E293B] leading-relaxed">
                       "{extractedFinding.evidence_excerpt || extractedFinding.description}"
                     </div>
                   </div>
 
                   <div>
-                    <div className="text-xs font-mono text-white/50 mb-1">Suggested Defensive Control</div>
-                    <div className="p-4 rounded-xl bg-[#0B1220] border border-white/[0.08] text-xs font-mono text-[#68CFA9] leading-relaxed">
+                    <div className="text-xs font-mono text-[#94A3B8] mb-1">Suggested Defensive Control</div>
+                    <div className="p-4 rounded-xl bg-[#F8FAFB] border border-[#E2E8F0] text-xs font-mono text-[#16A34A] leading-relaxed">
                       {extractedFinding.suggested_defensive_control || "Enforce airgapped broker validation on all tool arguments and canary exfiltration filters."}
                     </div>
                   </div>
 
                   <div>
-                    <div className="text-xs font-mono text-white/50 mb-1">Review Notes & Approval Stamp</div>
+                    <div className="text-xs font-mono text-[#94A3B8] mb-1">Review Notes & Approval Stamp</div>
                     <input
                       type="text"
                       value={reviewNotes}
                       onChange={(e) => setReviewNotes(e.target.value)}
-                      className="w-full bg-[#0B1220] border border-white/[0.1] rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-[#86A8FF]"
+                      className="w-full bg-[#F8FAFB] border border-[#E2E8F0] rounded-xl px-3 py-2 text-xs font-mono text-[#1E293B] focus:outline-none focus:border-[#16A34A]"
                     />
                   </div>
                 </div>
 
                 {/* Review Actions */}
-                <div className="flex items-center justify-between pt-4 border-t border-white/[0.06]">
+                <div className="flex items-center justify-between pt-4 border-t border-[#E2E8F0]">
                   <button
                     onClick={() => setCurrentStep(1)}
-                    className="px-4 py-2 rounded-xl border border-white/10 hover:bg-white/5 text-xs text-white/70"
+                    className="px-4 py-2 rounded-xl border border-[#E2E8F0] hover:bg-[#F8FAFB] text-xs text-[#1E293B]/70"
                   >
                     Back to Discovery
                   </button>
@@ -697,13 +734,13 @@ export default function ThreatLoopPage() {
                   <div className="flex items-center gap-3">
                     <button
                       onClick={() => handleReviewFinding("rejected")}
-                      className="px-4 py-2 rounded-xl border border-[#E5838F]/30 bg-[#E5838F]/10 hover:bg-[#E5838F]/20 text-xs text-[#E5838F] font-semibold flex items-center gap-1.5"
+                      className="px-4 py-2 rounded-xl border border-[#FECACA]/30 bg-[#FEF2F2] hover:bg-[#FEE2E2] text-xs text-[#DC2626] font-semibold flex items-center gap-1.5"
                     >
                       <XCircle className="w-3.5 h-3.5" /> Reject Finding
                     </button>
                     <button
                       onClick={() => handleReviewFinding("approved")}
-                      className="px-5 py-2 rounded-xl bg-gradient-to-r from-[#68CFA9] to-[#86A8FF] hover:from-[#58BFA9] hover:to-[#7698EF] text-[#0B1220] text-xs font-bold flex items-center gap-1.5 shadow-md"
+                      className="px-5 py-2 rounded-xl bg-[#16A34A] hover:bg-[#15803D] text-[#1E293B] text-xs font-bold flex items-center gap-1.5 shadow-md"
                     >
                       <CheckCircle2 className="w-3.5 h-3.5" /> Approve & Map to Safe Template
                     </button>
@@ -714,59 +751,79 @@ export default function ThreatLoopPage() {
 
             {/* STEP 3: SAFE TEST MAPPING */}
             {currentStep === 3 && (
-              <div className="p-6 rounded-2xl bg-[#0E1626] border border-white/[0.08] space-y-6">
-                <div className="pb-4 border-b border-white/[0.06]">
-                  <span className="text-xs font-mono uppercase tracking-wider text-[#86A8FF]">
+              <div className="p-6 rounded-2xl bg-white border border-[#E2E8F0] space-y-6">
+                <div className="pb-4 border-b border-[#E2E8F0]">
+                  <span className="text-xs font-mono uppercase tracking-wider text-[#16A34A]">
                     Deterministic Threat-to-Test Mapping Layer
                   </span>
-                  <h2 className="text-lg font-bold text-white mt-1">
+                  <h2 className="text-lg font-bold text-[#1E293B] mt-1">
                     Associate Finding with Safe Predefined Test Template
                   </h2>
-                  <p className="text-xs text-white/50 mt-1">
+                  <p className="text-xs text-[#94A3B8] mt-1">
                     Never translates arbitrary webpage text directly into shell commands. Tests use synthetic canary tokens inside controlled local broker fixtures.
                   </p>
                 </div>
 
-                {/* Template Selection */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                {/* 10 Safe Test Templates Selection */}
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-[#1E293B]">
+                    Available Predefined Test Templates ({templates.length} Active):
+                  </span>
+                  <span className="text-[11px] font-mono text-[#16A34A] bg-[#F0FDF4] px-2 py-0.5 rounded border border-[#BBF7D0]">
+                    10/10 Ready for Autonomous Execution
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 max-h-[480px] overflow-y-auto pr-1">
                   {templates.map((tpl) => (
                     <div
                       key={tpl.template_id}
                       onClick={() => setSelectedTemplateId(tpl.template_id)}
                       className={`p-4 rounded-xl border cursor-pointer transition-all ${
                         selectedTemplateId === tpl.template_id
-                          ? "bg-[#121C30] border-[#86A8FF] shadow-[0_0_12px_rgba(134,168,255,0.15)]"
-                          : "bg-[#0B1220]/60 border-white/[0.06] hover:border-white/20"
+                          ? "bg-[#F0FDF4] border-[#16A34A] shadow-sm ring-2 ring-[#16A34A]/10"
+                          : "bg-white border-[#E2E8F0] hover:border-[#CBD5E1]"
                       }`}
                     >
-                      <div className="text-xs font-bold text-white mb-1">{tpl.name}</div>
-                      <div className="text-[11px] font-mono text-[#86A8FF] mb-2">{tpl.template_id}</div>
-                      <p className="text-[11px] text-white/50 leading-relaxed">{tpl.description}</p>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="text-[10px] font-mono font-bold text-[#16A34A] bg-[#F0FDF4] px-1.5 py-0.5 rounded border border-[#BBF7D0]">
+                          {tpl.template_id}
+                        </span>
+                        <span className="text-[10px] font-semibold text-[#475569] bg-[#F1F5F9] px-2 py-0.5 rounded">
+                          {tpl.category ? tpl.category.split("(")[0].trim() : "Safety"}
+                        </span>
+                      </div>
+                      <div className="text-xs font-bold text-[#1E293B] mb-1 line-clamp-1">{tpl.name}</div>
+                      <p className="text-[11px] text-[#64748B] leading-relaxed line-clamp-3 mb-2">{tpl.description}</p>
+                      <div className="pt-2 border-t border-[#F1F5F9] flex items-center justify-between text-[10px] font-mono text-[#94A3B8]">
+                        <span>Canary: {tpl.synthetic_canary || "SEC-8921"}</span>
+                        <span className="text-[#16A34A] font-bold">DENY</span>
+                      </div>
                     </div>
                   ))}
                 </div>
 
                 {/* Mapped Test Specification Preview */}
                 {selectedTemplateId && (
-                  <div className="p-4 rounded-xl bg-[#0B1220] border border-white/[0.08] space-y-3 font-mono text-xs">
-                    <div className="text-white/50 uppercase tracking-wider text-[10px]">
+                  <div className="p-4 rounded-xl bg-[#F8FAFB] border border-[#E2E8F0] space-y-3 font-mono text-xs">
+                    <div className="text-[#94A3B8] uppercase tracking-wider text-[10px]">
                       Deterministic Test Specifications:
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <span className="text-white/40">Synthetic Canary Token:</span>
-                        <div className="text-[#86A8FF] font-bold mt-0.5">CANARY-AIRLOCK-SEC-8921</div>
+                        <span className="text-[#94A3B8]">Synthetic Canary Token:</span>
+                        <div className="text-[#16A34A] font-bold mt-0.5">CANARY-AIRLOCK-SEC-8921</div>
                       </div>
                       <div>
-                        <span className="text-white/40">Target Policy Rule:</span>
-                        <div className="text-[#68CFA9] font-bold mt-0.5">
+                        <span className="text-[#94A3B8]">Target Policy Rule:</span>
+                        <div className="text-[#16A34A] font-bold mt-0.5">
                           SEC-POL-01 (Airgapped Broker, Block Tool Exfiltration)
                         </div>
                       </div>
                     </div>
                     <div>
-                      <span className="text-white/40">Expected Broker Enforcement:</span>
-                      <div className="text-[#68CFA9] mt-0.5">
+                      <span className="text-[#94A3B8]">Expected Broker Enforcement:</span>
+                      <div className="text-[#16A34A] mt-0.5">
                         DENY decision with zero canary leakage. Client model isolation preserved.
                       </div>
                     </div>
@@ -774,17 +831,17 @@ export default function ThreatLoopPage() {
                 )}
 
                 {/* Mapping Actions */}
-                <div className="flex items-center justify-between pt-4 border-t border-white/[0.06]">
+                <div className="flex items-center justify-between pt-4 border-t border-[#E2E8F0]">
                   <button
                     onClick={() => setCurrentStep(2)}
-                    className="px-4 py-2 rounded-xl border border-white/10 hover:bg-white/5 text-xs text-white/70"
+                    className="px-4 py-2 rounded-xl border border-[#E2E8F0] hover:bg-[#F8FAFB] text-xs text-[#1E293B]/70"
                   >
                     Back to Review
                   </button>
 
                   <button
                     onClick={handleMapTemplate}
-                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#86A8FF] to-[#A5A0F4] hover:from-[#7598EF] hover:to-[#948FE4] text-[#0B1220] text-xs font-bold flex items-center gap-1.5 shadow-md"
+                    className="px-5 py-2.5 rounded-xl bg-[#16A34A] hover:bg-[#15803D] text-[#1E293B] text-xs font-bold flex items-center gap-1.5 shadow-md"
                   >
                     Confirm Mapping & Proceed to Evaluation <ArrowRight className="w-3.5 h-3.5" />
                   </button>
@@ -795,13 +852,13 @@ export default function ThreatLoopPage() {
             {/* STEP 4: REAL EVALUATION & EVIDENCE RECEIPT */}
             {currentStep === 4 && (
               <div className="space-y-6">
-                <div className="p-6 rounded-2xl bg-[#0E1626] border border-white/[0.08] space-y-4">
-                  <div className="flex items-center justify-between pb-4 border-b border-white/[0.06]">
+                <div className="p-6 rounded-2xl bg-white border border-[#E2E8F0] space-y-4">
+                  <div className="flex items-center justify-between pb-4 border-b border-[#E2E8F0]">
                     <div>
-                      <span className="text-xs font-mono uppercase tracking-wider text-[#86A8FF]">
+                      <span className="text-xs font-mono uppercase tracking-wider text-[#16A34A]">
                         AIRLOCK Assurance Engine
                       </span>
-                      <h2 className="text-lg font-bold text-white mt-1">
+                      <h2 className="text-lg font-bold text-[#1E293B] mt-1">
                         Controlled Before-and-After Evaluation Comparison
                       </h2>
                     </div>
@@ -809,7 +866,7 @@ export default function ThreatLoopPage() {
                     <button
                       onClick={handleExecuteEvaluation}
                       disabled={isEvaluating}
-                      className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#86A8FF] to-[#A5A0F4] hover:from-[#7598EF] hover:to-[#948FE4] text-[#0B1220] text-xs font-bold flex items-center gap-2 shadow-lg disabled:opacity-40"
+                      className="px-5 py-2.5 rounded-xl bg-[#16A34A] hover:bg-[#15803D] text-[#1E293B] text-xs font-bold flex items-center gap-2 shadow-lg disabled:opacity-40"
                     >
                       {isEvaluating ? (
                         <>
@@ -829,53 +886,53 @@ export default function ThreatLoopPage() {
                   {evalResult && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {/* Scenario A: Vulnerable Baseline */}
-                      <div className="p-5 rounded-xl bg-[#0B1220] border border-[#E5838F]/40 space-y-3">
+                      <div className="p-5 rounded-xl bg-[#F8FAFB] border border-[#FECACA]/40 space-y-3">
                         <div className="flex items-center justify-between">
-                          <span className="text-xs font-bold font-mono text-[#E5838F] flex items-center gap-1.5">
+                          <span className="text-xs font-bold font-mono text-[#DC2626] flex items-center gap-1.5">
                             <AlertTriangle className="w-4 h-4" />
                             1. Vulnerable Baseline (Unbrokered)
                           </span>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#E5838F]/20 text-[#E5838F] font-bold">
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#FEE2E2] text-[#DC2626] font-bold">
                             LEAK CONFIRMED
                           </span>
                         </div>
-                        <p className="text-xs text-white/70 leading-relaxed">
+                        <p className="text-xs text-[#1E293B]/70 leading-relaxed">
                           {evalResult.vulnerable_baseline?.summary}
                         </p>
-                        <div className="pt-2 border-t border-white/[0.06] font-mono text-[11px] space-y-1">
+                        <div className="pt-2 border-t border-[#E2E8F0] font-mono text-[11px] space-y-1">
                           <div className="flex justify-between">
-                            <span className="text-white/40">Canary Exfiltrated:</span>
-                            <span className="text-[#E5838F] font-bold">YES (CRITICAL)</span>
+                            <span className="text-[#94A3B8]">Canary Exfiltrated:</span>
+                            <span className="text-[#DC2626] font-bold">YES (CRITICAL)</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-white/40">Broker Enforcement:</span>
-                            <span className="text-white/50">INACTIVE / BYPASSED</span>
+                            <span className="text-[#94A3B8]">Broker Enforcement:</span>
+                            <span className="text-[#94A3B8]">INACTIVE / BYPASSED</span>
                           </div>
                         </div>
                       </div>
 
                       {/* Scenario B: Hardened Broker Isolation */}
-                      <div className="p-5 rounded-xl bg-[#0B1220] border border-[#68CFA9]/40 space-y-3">
+                      <div className="p-5 rounded-xl bg-[#F8FAFB] border border-[#16A34A] space-y-3">
                         <div className="flex items-center justify-between">
-                          <span className="text-xs font-bold font-mono text-[#68CFA9] flex items-center gap-1.5">
+                          <span className="text-xs font-bold font-mono text-[#16A34A] flex items-center gap-1.5">
                             <ShieldCheck className="w-4 h-4" />
                             2. Hardened AIRLOCK Isolation
                           </span>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#68CFA9]/20 text-[#68CFA9] font-bold">
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#DCFCE7] text-[#16A34A] font-bold">
                             ASSURANCE CONFIRMED
                           </span>
                         </div>
-                        <p className="text-xs text-white/70 leading-relaxed">
+                        <p className="text-xs text-[#1E293B]/70 leading-relaxed">
                           {evalResult.hardened_assurance?.summary}
                         </p>
-                        <div className="pt-2 border-t border-white/[0.06] font-mono text-[11px] space-y-1">
+                        <div className="pt-2 border-t border-[#E2E8F0] font-mono text-[11px] space-y-1">
                           <div className="flex justify-between">
-                            <span className="text-white/40">Canary Exfiltrated:</span>
-                            <span className="text-[#68CFA9] font-bold">NO (0 LEAKS)</span>
+                            <span className="text-[#94A3B8]">Canary Exfiltrated:</span>
+                            <span className="text-[#16A34A] font-bold">NO (0 LEAKS)</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-white/40">Broker Decision:</span>
-                            <span className="text-[#68CFA9] font-bold">DENY (RULE SEC-POL-01)</span>
+                            <span className="text-[#94A3B8]">Broker Decision:</span>
+                            <span className="text-[#16A34A] font-bold">DENY (RULE SEC-POL-01)</span>
                           </div>
                         </div>
                       </div>
@@ -885,16 +942,16 @@ export default function ThreatLoopPage() {
 
                 {/* Cryptographic Signed Evidence Card */}
                 {evalResult?.signed_receipt && (
-                  <div className="p-6 rounded-2xl bg-[#0E1626] border border-[#86A8FF]/30 space-y-5">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-white/[0.06]">
+                  <div className="p-6 rounded-2xl bg-white border border-[#BBF7D0] space-y-5">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-[#E2E8F0]">
                       <div className="flex items-center gap-2">
-                        <Lock className="w-4 h-4 text-[#86A8FF]" />
-                        <h3 className="text-base font-bold text-white">
+                        <Lock className="w-4 h-4 text-[#16A34A]" />
+                        <h3 className="text-base font-bold text-[#1E293B]">
                           Cryptographically Verifiable Evidence Receipt
                         </h3>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-mono px-2.5 py-1 rounded bg-[#68CFA9]/15 border border-[#68CFA9]/30 text-[#68CFA9] font-bold flex items-center gap-1">
+                        <span className="text-xs font-mono px-2.5 py-1 rounded bg-[#F0FDF4] border border-[#BBF7D0]/30 text-[#16A34A] font-bold flex items-center gap-1">
                           <CheckCircle2 className="w-3.5 h-3.5" /> Ed25519 VERIFIED
                         </span>
                         <button
@@ -909,7 +966,7 @@ export default function ThreatLoopPage() {
                             a.download = `airlock_receipt_${runId}.json`;
                             a.click();
                           }}
-                          className="px-3 py-1 rounded-lg bg-[#121C30] hover:bg-[#182640] border border-white/10 text-xs text-white/80 font-mono flex items-center gap-1.5 transition-colors"
+                          className="px-3 py-1 rounded-lg bg-[#F0FDF4] hover:bg-[#F1F5F9] border border-[#E2E8F0] text-xs text-[#1E293B] font-mono flex items-center gap-1.5 transition-colors"
                         >
                           <Download className="w-3.5 h-3.5" /> Download JSON
                         </button>
@@ -918,82 +975,82 @@ export default function ThreatLoopPage() {
 
                     {/* Cryptographic Proof Parameters */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3 font-mono text-xs">
-                      <div className="p-3.5 rounded-xl bg-[#0B1220] border border-white/[0.08]">
-                        <div className="flex justify-between text-white/40 mb-1">
+                      <div className="p-3.5 rounded-xl bg-[#F8FAFB] border border-[#E2E8F0]">
+                        <div className="flex justify-between text-[#94A3B8] mb-1">
                           <span>Algorithm:</span>
                         </div>
-                        <div className="text-white font-semibold">
+                        <div className="text-[#1E293B] font-semibold">
                           {evalResult.signed_receipt.algorithm}
                         </div>
                       </div>
 
-                      <div className="p-3.5 rounded-xl bg-[#0B1220] border border-white/[0.08]">
-                        <div className="flex justify-between text-white/40 mb-1">
+                      <div className="p-3.5 rounded-xl bg-[#F8FAFB] border border-[#E2E8F0]">
+                        <div className="flex justify-between text-[#94A3B8] mb-1">
                           <span>SHA-256 Root Digest:</span>
                           <button
                             onClick={() =>
                               copyToClipboard(evalResult.signed_receipt.root_hash, "root_hash")
                             }
-                            className="text-[#86A8FF] hover:text-white"
+                            className="text-[#16A34A] hover:text-[#1E293B]"
                           >
                             {copiedKey === "root_hash" ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                           </button>
                         </div>
-                        <div className="text-[#86A8FF] font-bold truncate">
+                        <div className="text-[#16A34A] font-bold truncate">
                           {evalResult.signed_receipt.root_hash}
                         </div>
                       </div>
 
-                      <div className="p-3.5 rounded-xl bg-[#0B1220] border border-white/[0.08]">
-                        <div className="flex justify-between text-white/40 mb-1">
+                      <div className="p-3.5 rounded-xl bg-[#F8FAFB] border border-[#E2E8F0]">
+                        <div className="flex justify-between text-[#94A3B8] mb-1">
                           <span>Public Key:</span>
                           <button
                             onClick={() =>
                               copyToClipboard(evalResult.signed_receipt.public_key_hex, "pub_key")
                             }
-                            className="text-[#86A8FF] hover:text-white"
+                            className="text-[#16A34A] hover:text-[#1E293B]"
                           >
                             {copiedKey === "pub_key" ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                           </button>
                         </div>
-                        <div className="text-white truncate">
+                        <div className="text-[#1E293B] truncate">
                           {evalResult.signed_receipt.public_key_hex}
                         </div>
                       </div>
                     </div>
 
                     {/* ThreatLoop Provenance Binding Display */}
-                    <div className="p-4 rounded-xl bg-[#121C30] border border-white/[0.08] space-y-2 text-xs font-mono">
-                      <div className="text-white/40 uppercase tracking-wider text-[10px]">
+                    <div className="p-4 rounded-xl bg-[#F0FDF4] border border-[#E2E8F0] space-y-2 text-xs font-mono">
+                      <div className="text-[#94A3B8] uppercase tracking-wider text-[10px]">
                         Cryptographically Bound Provenance Metadata:
                       </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-white/80">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-[#1E293B]">
                         <div>
-                          <span className="text-white/40">Public Source:</span>{" "}
-                          <span className="text-[#86A8FF]">{targetUrl}</span>
+                          <span className="text-[#94A3B8]">Public Source:</span>{" "}
+                          <span className="text-[#16A34A]">{targetUrl}</span>
                         </div>
                         <div>
-                          <span className="text-white/40">Verified Domain:</span>{" "}
-                          <span className="text-[#68CFA9]">owasp.org</span>
+                          <span className="text-[#94A3B8]">Verified Domain:</span>{" "}
+                          <span className="text-[#16A34A]">owasp.org</span>
                         </div>
                         <div>
-                          <span className="text-white/40">Finding Review:</span>{" "}
-                          <span className="text-[#68CFA9]">APPROVED (Elena Vance)</span>
+                          <span className="text-[#94A3B8]">Finding Review:</span>{" "}
+                          <span className="text-[#16A34A]">APPROVED (Elena Vance)</span>
                         </div>
                         <div>
-                          <span className="text-white/40">Safe Template:</span>{" "}
-                          <span className="text-white">{selectedTemplateId}</span>
+                          <span className="text-[#94A3B8]">Safe Template:</span>{" "}
+                          <span className="text-[#1E293B]">{selectedTemplateId}</span>
                         </div>
                       </div>
                     </div>
 
                     {/* Independent CLI Verification Instruction */}
-                    <div className="p-4 rounded-xl bg-[#0B1220] border border-white/[0.08] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="p-4 rounded-xl bg-[#F8FAFB] border border-[#E2E8F0] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                       <div>
-                        <div className="text-xs font-mono font-semibold text-white">
+                        <div className="text-xs font-mono font-semibold text-[#1E293B]">
                           Independent Standalone CLI Verification
                         </div>
-                        <div className="text-[11px] text-white/50 font-mono mt-0.5">
+                        <div className="text-[11px] text-[#94A3B8] font-mono mt-0.5">
                           python backend/cli_verifier.py airlock_receipt.json
                         </div>
                       </div>
@@ -1004,7 +1061,7 @@ export default function ThreatLoopPage() {
                             "cli_cmd"
                           )
                         }
-                        className="px-3 py-1.5 rounded-lg bg-[#121C30] hover:bg-[#182640] border border-white/10 text-xs text-[#86A8FF] font-mono flex items-center gap-1.5 shrink-0"
+                        className="px-3 py-1.5 rounded-lg bg-[#F0FDF4] hover:bg-[#F1F5F9] border border-[#E2E8F0] text-xs text-[#16A34A] font-mono flex items-center gap-1.5 shrink-0"
                       >
                         {copiedKey === "cli_cmd" ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
                         Copy CLI Command
@@ -1021,16 +1078,16 @@ export default function ThreatLoopPage() {
             TAB 2: BROWSER-DRIVEN STAGING TESTING (CAPABILITY 2)
            ========================================================================= */}
         {activeTab === "browser_test" && (
-          <div className="p-6 rounded-2xl bg-[#0E1626] border border-white/[0.08] space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-white/[0.06]">
+          <div className="p-6 rounded-2xl bg-white border border-[#E2E8F0] space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-[#E2E8F0]">
               <div>
-                <span className="text-xs font-mono uppercase tracking-wider text-[#86A8FF]">
+                <span className="text-xs font-mono uppercase tracking-wider text-[#16A34A]">
                   Capability 2: Authorized Staging Web Agent Testing
                 </span>
-                <h2 className="text-lg font-bold text-white mt-1">
+                <h2 className="text-lg font-bold text-[#1E293B] mt-1">
                   TinyFish Browser-Driven Agent vs Staging Application
                 </h2>
-                <p className="text-xs text-white/50 mt-1">
+                <p className="text-xs text-[#94A3B8] mt-1">
                   TinyFish physically opens the authorized staging chatbot, enters approved synthetic test prompts, and extracts observed responses.
                 </p>
               </div>
@@ -1038,7 +1095,7 @@ export default function ThreatLoopPage() {
               <Link
                 href="/staging/agent-chat"
                 target="_blank"
-                className="px-3.5 py-2 rounded-xl bg-[#121C30] hover:bg-[#182640] border border-white/10 text-xs text-[#86A8FF] font-mono flex items-center gap-1.5 transition-colors shrink-0"
+                className="px-3.5 py-2 rounded-xl bg-[#F0FDF4] hover:bg-[#F1F5F9] border border-[#E2E8F0] text-xs text-[#16A34A] font-mono flex items-center gap-1.5 transition-colors shrink-0"
               >
                 <span>Open Staging Chatbot</span>
                 <ExternalLink className="w-3.5 h-3.5" />
@@ -1048,22 +1105,22 @@ export default function ThreatLoopPage() {
             {/* Test Configuration */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-mono text-white/60">Authorized Staging URL</label>
+                <label className="text-xs font-mono text-[#64748B]">Authorized Staging URL</label>
                 <input
                   type="text"
                   value={stagingUrl}
                   onChange={(e) => setStagingUrl(e.target.value)}
-                  className="w-full bg-[#0B1220] border border-white/[0.1] rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-[#86A8FF]"
+                  className="w-full bg-[#F8FAFB] border border-[#E2E8F0] rounded-xl px-3 py-2 text-xs font-mono text-[#1E293B] focus:outline-none focus:border-[#16A34A]"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-mono text-white/60">Synthetic Test Prompt</label>
+                <label className="text-xs font-mono text-[#64748B]">Synthetic Test Prompt</label>
                 <input
                   type="text"
                   value={stagingPrompt}
                   onChange={(e) => setStagingPrompt(e.target.value)}
-                  className="w-full bg-[#0B1220] border border-white/[0.1] rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-[#86A8FF]"
+                  className="w-full bg-[#F8FAFB] border border-[#E2E8F0] rounded-xl px-3 py-2 text-xs font-mono text-[#1E293B] focus:outline-none focus:border-[#16A34A]"
                 />
               </div>
             </div>
@@ -1072,7 +1129,7 @@ export default function ThreatLoopPage() {
             <button
               onClick={handleRunBrowserTest}
               disabled={isBrowserTesting}
-              className="h-11 px-6 rounded-xl bg-gradient-to-r from-[#86A8FF] to-[#A5A0F4] hover:from-[#7598EF] hover:to-[#948FE4] text-[#0B1220] font-bold text-xs flex items-center gap-2 transition-all disabled:opacity-40 shadow-lg"
+              className="h-11 px-6 rounded-xl bg-[#16A34A] hover:bg-[#15803D] text-[#1E293B] font-bold text-xs flex items-center gap-2 transition-all disabled:opacity-40 shadow-lg"
             >
               {isBrowserTesting ? (
                 <>
@@ -1089,14 +1146,14 @@ export default function ThreatLoopPage() {
 
             {/* Browser Test Results */}
             {browserTestResult && (
-              <div className="p-5 rounded-xl bg-[#0B1220] border border-white/[0.08] space-y-4 font-mono text-xs">
-                <div className="flex items-center justify-between pb-3 border-b border-white/[0.06]">
-                  <span className="text-white/60 font-semibold">Browser Agent Observed Execution:</span>
+              <div className="p-5 rounded-xl bg-[#F8FAFB] border border-[#E2E8F0] space-y-4 font-mono text-xs">
+                <div className="flex items-center justify-between pb-3 border-b border-[#E2E8F0]">
+                  <span className="text-[#64748B] font-semibold">Browser Agent Observed Execution:</span>
                   <span
                     className={`px-2.5 py-0.5 rounded text-[11px] font-bold ${
                       browserTestResult.canary_detected
-                        ? "bg-[#E5838F]/20 text-[#E5838F]"
-                        : "bg-[#68CFA9]/20 text-[#68CFA9]"
+                        ? "bg-[#FEE2E2] text-[#DC2626]"
+                        : "bg-[#DCFCE7] text-[#16A34A]"
                     }`}
                   >
                     {browserTestResult.canary_detected
@@ -1107,21 +1164,21 @@ export default function ThreatLoopPage() {
 
                 <div className="space-y-2">
                   <div>
-                    <span className="text-white/40">Prompt Submitted by TinyFish:</span>
-                    <div className="text-white mt-0.5 bg-[#121C30] p-2.5 rounded-lg border border-white/[0.04]">
+                    <span className="text-[#94A3B8]">Prompt Submitted by TinyFish:</span>
+                    <div className="text-[#1E293B] mt-0.5 bg-[#F0FDF4] p-2.5 rounded-lg border border-[#E2E8F0]">
                       {browserTestResult.prompt_submitted}
                     </div>
                   </div>
 
                   <div>
-                    <span className="text-white/40">Observed Response from Staging Bot:</span>
-                    <div className="text-[#68CFA9] mt-0.5 bg-[#121C30] p-2.5 rounded-lg border border-white/[0.04] leading-relaxed">
+                    <span className="text-[#94A3B8]">Observed Response from Staging Bot:</span>
+                    <div className="text-[#16A34A] mt-0.5 bg-[#F0FDF4] p-2.5 rounded-lg border border-[#E2E8F0] leading-relaxed">
                       {browserTestResult.observed_response}
                     </div>
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-white/[0.06] flex items-center justify-between text-[11px] text-white/50">
+                <div className="pt-2 border-t border-[#E2E8F0] flex items-center justify-between text-[11px] text-[#94A3B8]">
                   <span>Task ID: {browserTestResult.tinyfish_task_id}</span>
                   <span>Isolation Boundary Preserved: YES</span>
                 </div>
@@ -1134,16 +1191,16 @@ export default function ThreatLoopPage() {
             TAB 3: UPSTREAM SECURITY DRIFT DETECTION
            ========================================================================= */}
         {activeTab === "drift" && (
-          <div className="p-6 rounded-2xl bg-[#0E1626] border border-white/[0.08] space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-white/[0.06]">
+          <div className="p-6 rounded-2xl bg-white border border-[#E2E8F0] space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-[#E2E8F0]">
               <div>
-                <span className="text-xs font-mono uppercase tracking-wider text-[#86A8FF]">
+                <span className="text-xs font-mono uppercase tracking-wider text-[#16A34A]">
                   Continuous Threat Intelligence Assurance
                 </span>
-                <h2 className="text-lg font-bold text-white mt-1">
+                <h2 className="text-lg font-bold text-[#1E293B] mt-1">
                   Automated Security Drift Detection
                 </h2>
-                <p className="text-xs text-white/50 mt-1">
+                <p className="text-xs text-[#94A3B8] mt-1">
                   Monitors approved public intelligence sources (OWASP, MITRE ATLAS, NIST) for upstream revisions and flags affected evaluation test cases.
                 </p>
               </div>
@@ -1151,7 +1208,7 @@ export default function ThreatLoopPage() {
               <button
                 onClick={handleCheckDrift}
                 disabled={isScanningDrift}
-                className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#86A8FF] to-[#A5A0F4] hover:from-[#7598EF] hover:to-[#948FE4] text-[#0B1220] font-bold text-xs flex items-center gap-1.5 shadow-md disabled:opacity-40"
+                className="px-4 py-2 rounded-xl bg-[#16A34A] hover:bg-[#15803D] text-[#1E293B] font-bold text-xs flex items-center gap-1.5 shadow-md disabled:opacity-40"
               >
                 {isScanningDrift ? (
                   <RefreshCw className="w-3.5 h-3.5 animate-spin" />
@@ -1167,17 +1224,17 @@ export default function ThreatLoopPage() {
               {driftResults.map((src, i) => (
                 <div
                   key={i}
-                  className="p-4 rounded-xl bg-[#0B1220] border border-white/[0.08] flex flex-col md:flex-row md:items-center justify-between gap-3"
+                  className="p-4 rounded-xl bg-[#F8FAFB] border border-[#E2E8F0] flex flex-col md:flex-row md:items-center justify-between gap-3"
                 >
                   <div className="space-y-1">
-                    <div className="font-bold text-white flex items-center gap-2">
+                    <div className="font-bold text-[#1E293B] flex items-center gap-2">
                       {src.name}
-                      <span className="text-[10px] text-[#86A8FF] bg-[#86A8FF]/10 px-1.5 py-0.2 rounded border border-[#86A8FF]/20">
+                      <span className="text-[10px] text-[#16A34A] bg-[#F0FDF4] px-1.5 py-0.2 rounded border border-[#BBF7D0]">
                         {src.domain}
                       </span>
                     </div>
-                    <div className="text-[11px] text-white/40 truncate max-w-xl">{src.url}</div>
-                    <div className="text-[10px] text-white/30">
+                    <div className="text-[11px] text-[#94A3B8] truncate max-w-xl">{src.url}</div>
+                    <div className="text-[10px] text-[#1E293B]/30">
                       Digest: {src.current_hash ? src.current_hash.substring(0, 32) + "..." : "Cached"}
                     </div>
                   </div>
@@ -1187,13 +1244,13 @@ export default function ThreatLoopPage() {
                       <span
                         className={`px-2.5 py-1 rounded-md text-[11px] font-bold ${
                           src.drift_detected
-                            ? "bg-[#E5838F]/20 text-[#E5838F] border border-[#E5838F]/40"
-                            : "bg-[#68CFA9]/20 text-[#68CFA9] border border-[#68CFA9]/40"
+                            ? "bg-[#FEE2E2] text-[#DC2626] border border-[#FECACA]/40"
+                            : "bg-[#DCFCE7] text-[#16A34A] border border-[#16A34A]"
                         }`}
                       >
                         {src.drift_detected ? "DRIFT DETECTED" : "SYNCHRONIZED"}
                       </span>
-                      <div className="text-[10px] text-white/40 mt-1">
+                      <div className="text-[10px] text-[#94A3B8] mt-1">
                         Status: {src.status || "SYNCHRONIZED_CACHE"}
                       </div>
                     </div>

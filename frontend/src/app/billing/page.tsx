@@ -47,20 +47,20 @@ export default function BillingPage() {
   return (
     <AppShell>
       <div className="space-y-8 max-w-7xl mx-auto">
-        <div className="pb-6 border-b border-white/[0.08]">
+        <div className="pb-6 border-b border-[#E2E8F0]">
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-[#F4F6FB] tracking-tight">Subscription & Evaluation Metering</h1>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#68CFA9]/10 text-[#68CFA9] border border-[#68CFA9]/20">
+            <h1 className="text-2xl font-bold text-[#1E293B] tracking-tight">Subscription & Evaluation Metering</h1>
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#F0FDF4] text-[#16A34A] border border-[#BBF7D0]/20">
               STRIPE TEST MODE ACTIVE
             </span>
           </div>
-          <p className="text-xs text-[#ADBBD0] mt-1">
+          <p className="text-xs text-[#64748B] mt-1">
             Track evaluation run volume against tenant quotas. Commercial entitlements are server-enforced.
           </p>
         </div>
 
         {upgradeSuccess && (
-          <div className="p-4 rounded-xl bg-[#68CFA9]/10 border border-[#68CFA9]/30 text-xs font-mono text-[#68CFA9] flex items-center gap-2">
+          <div className="p-4 rounded-xl bg-[#F0FDF4] border border-[#BBF7D0]/30 text-xs font-mono text-[#16A34A] flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4" />
             <span>{upgradeSuccess}</span>
           </div>
@@ -68,28 +68,28 @@ export default function BillingPage() {
 
         {/* Usage Telemetry Card */}
         <div className="clay-card p-6 sm:p-8 space-y-6">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-white/[0.08]">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-[#E2E8F0]">
             <div>
-              <span className="text-xs font-mono text-[#86A8FF] uppercase">CURRENT BILLING CYCLE</span>
-              <h2 className="text-xl font-bold text-[#F4F6FB] mt-0.5">
+              <span className="text-xs font-mono text-[#16A34A] uppercase">CURRENT BILLING CYCLE</span>
+              <h2 className="text-xl font-bold text-[#1E293B] mt-0.5">
                 {billing?.plan_tier?.toUpperCase() || "ENTERPRISE"} TIER
               </h2>
             </div>
-            <span className="text-xs font-mono px-3 py-1 rounded-full bg-[#68CFA9]/15 text-[#68CFA9] border border-[#68CFA9]/30">
+            <span className="text-xs font-mono px-3 py-1 rounded-full bg-[#F0FDF4] text-[#16A34A] border border-[#BBF7D0]/30">
               STATUS: {billing?.status?.toUpperCase() || "ACTIVE"}
             </span>
           </div>
 
           <div className="space-y-3">
             <div className="flex items-center justify-between text-xs font-mono">
-              <span className="text-[#ADBBD0]">Evaluations Run This Month</span>
-              <span className="text-[#F4F6FB] font-bold">
+              <span className="text-[#64748B]">Evaluations Run This Month</span>
+              <span className="text-[#1E293B] font-bold">
                 {billing?.evaluations_used ?? 42} / {billing?.monthly_evaluation_limit ?? 5000} runs
               </span>
             </div>
 
             {/* Meter Progress Bar */}
-            <div className="w-full h-3 rounded-full bg-[#0B1220] border border-white/10 overflow-hidden">
+            <div className="w-full h-3 rounded-full bg-[#F8FAFB] border border-[#E2E8F0] overflow-hidden">
               <div
                 className="h-full bg-gradient-to-r from-[#86A8FF] via-[#A5A0F4] to-[#68CFA9] rounded-full"
                 style={{
@@ -101,7 +101,7 @@ export default function BillingPage() {
               />
             </div>
 
-            <p className="text-[11px] font-mono text-[#7587A4]">
+            <p className="text-[11px] font-mono text-[#94A3B8]">
               4,958 evaluations remaining in current cycle. Quota resets on the 1st of next month.
             </p>
           </div>
@@ -109,7 +109,7 @@ export default function BillingPage() {
 
         {/* Packaging Plans Grid */}
         <div className="space-y-4">
-          <h3 className="text-sm font-bold text-[#F4F6FB] uppercase tracking-wider font-mono">
+          <h3 className="text-sm font-bold text-[#1E293B] uppercase tracking-wider font-mono">
             Available Commercial Plans
           </h3>
 
@@ -118,22 +118,22 @@ export default function BillingPage() {
               const isCurrent = (billing?.plan_tier || "enterprise").toLowerCase() === p.tier.toLowerCase();
               return (
                 <div key={p.tier} className={`clay-card p-6 flex flex-col justify-between space-y-5 ${
-                  isCurrent ? "border-[#86A8FF]/40 shadow-lg" : "border-white/10"
+                  isCurrent ? "border-[#16A34A] shadow-lg" : "border-[#E2E8F0]"
                 }`}>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-mono text-[#86A8FF] uppercase font-bold">{p.name}</span>
+                      <span className="text-xs font-mono text-[#16A34A] uppercase font-bold">{p.name}</span>
                       {isCurrent && (
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#86A8FF]/10 text-[#86A8FF]">
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#F0FDF4] text-[#16A34A]">
                           CURRENT
                         </span>
                       )}
                     </div>
-                    <p className="text-2xl font-extrabold text-[#F4F6FB]">{p.price}</p>
-                    <ul className="text-xs font-mono text-[#ADBBD0] space-y-2 pt-3 border-t border-white/[0.06]">
+                    <p className="text-2xl font-extrabold text-[#1E293B]">{p.price}</p>
+                    <ul className="text-xs font-mono text-[#64748B] space-y-2 pt-3 border-t border-[#E2E8F0]">
                       {p.features.map((feat: string, i: number) => (
                         <li key={i} className="flex items-center gap-2">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-[#68CFA9] shrink-0" />
+                          <CheckCircle2 className="w-3.5 h-3.5 text-[#16A34A] shrink-0" />
                           <span>{feat}</span>
                         </li>
                       ))}
@@ -145,7 +145,7 @@ export default function BillingPage() {
                     disabled={isCurrent || upgradingTier !== null}
                     className={`w-full py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer transition-all ${
                       isCurrent
-                        ? "bg-[#1B2942]/50 text-[#7587A4] border border-white/5 cursor-default"
+                        ? "bg-[#F0FDF4]/50 text-[#94A3B8] border border-white/5 cursor-default"
                         : "clay-btn-primary"
                     }`}
                   >
@@ -159,7 +159,7 @@ export default function BillingPage() {
                     ) : (
                       <>
                         <span>Select {p.name} (Test Mode)</span>
-                        <ArrowRight className="w-3.5 h-3.5 text-[#86A8FF]" />
+                        <ArrowRight className="w-3.5 h-3.5 text-[#16A34A]" />
                       </>
                     )}
                   </button>

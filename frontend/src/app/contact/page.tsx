@@ -35,18 +35,18 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B1220] flex flex-col">
+    <div className="min-h-screen bg-[#F8FAFB] flex flex-col">
       <Navbar />
 
-      <section className="pt-16 pb-20 border-b border-white/[0.06] relative">
+      <section className="pt-16 pb-20 border-b border-[#E2E8F0] relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 text-center">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#121C30] border border-[#86A8FF]/20 text-xs font-mono text-[#86A8FF]">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#F0FDF4] border border-[#BBF7D0] text-xs font-mono text-[#16A34A]">
             SOLUTIONS ENGINEERING & ARCHITECTURAL DEMO
           </div>
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-[#F4F6FB] tracking-tight">
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-[#1E293B] tracking-tight">
             Book an Architectural Demo
           </h1>
-          <p className="text-base sm:text-lg text-[#ADBBD0] max-w-xl mx-auto">
+          <p className="text-base sm:text-lg text-[#64748B] max-w-xl mx-auto">
             Discuss your evaluation isolation requirements directly with our security engineering team.
           </p>
         </div>
@@ -57,12 +57,12 @@ export default function ContactPage() {
           <div className="clay-card p-8 sm:p-10 space-y-6">
             {submitted ? (
               <div className="text-center py-12 space-y-4">
-                <div className="w-14 h-14 rounded-full bg-[#68CFA9]/20 border border-[#68CFA9]/40 flex items-center justify-center text-[#68CFA9] mx-auto shadow-[0_0_30px_rgba(104,207,169,0.3)]">
+                <div className="w-14 h-14 rounded-full bg-[#DCFCE7] border border-[#16A34A] flex items-center justify-center text-[#16A34A] mx-auto shadow-[0_0_30px_rgba(104,207,169,0.3)]">
                   <CheckCircle2 className="w-7 h-7" />
                 </div>
-                <h3 className="text-2xl font-bold text-[#F4F6FB]">Demo Request Received</h3>
-                <p className="text-sm text-[#ADBBD0] max-w-md mx-auto leading-relaxed">
-                  Thank you, <span className="text-[#F4F6FB] font-semibold">{formData.name}</span>. An AIRLOCK AI solutions engineer will follow up at <span className="text-[#86A8FF] font-mono">{formData.work_email}</span> within 24 business hours.
+                <h3 className="text-2xl font-bold text-[#1E293B]">Demo Request Received</h3>
+                <p className="text-sm text-[#64748B] max-w-md mx-auto leading-relaxed">
+                  Thank you, <span className="text-[#1E293B] font-semibold">{formData.name}</span>. An AIRLOCK AI solutions engineer will follow up at <span className="text-[#16A34A] font-mono">{formData.work_email}</span> within 24 business hours.
                 </p>
                 <div className="pt-4">
                   <Link
@@ -70,61 +70,61 @@ export default function ContactPage() {
                     className="clay-btn-primary inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold"
                   >
                     <span>Explore Evaluation Studio In The Meantime</span>
-                    <ArrowRight className="w-4 h-4 text-[#86A8FF]" />
+                    <ArrowRight className="w-4 h-4 text-[#16A34A]" />
                   </Link>
                 </div>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
                 {error && (
-                  <div className="p-3.5 rounded-xl bg-[#E5838F]/10 border border-[#E5838F]/30 text-xs text-[#E5838F]">
+                  <div className="p-3.5 rounded-xl bg-[#FEF2F2] border border-[#FECACA]/30 text-xs text-[#DC2626]">
                     {error}
                   </div>
                 )}
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-mono text-[#ADBBD0]">Full Name *</label>
+                    <label className="text-xs font-mono text-[#64748B]">Full Name *</label>
                     <input
                       type="text"
                       required
                       placeholder="Elena Vance"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#0B1220] border border-white/10 text-sm text-[#F4F6FB] placeholder-[#7587A4] focus:outline-none focus:border-[#86A8FF]"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#F8FAFB] border border-[#E2E8F0] text-sm text-[#1E293B] placeholder-[#7587A4] focus:outline-none focus:border-[#16A34A]"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-mono text-[#ADBBD0]">Work Email *</label>
+                    <label className="text-xs font-mono text-[#64748B]">Work Email *</label>
                     <input
                       type="email"
                       required
                       placeholder="elena@company.com"
                       value={formData.work_email}
                       onChange={(e) => setFormData({ ...formData, work_email: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#0B1220] border border-white/10 text-sm text-[#F4F6FB] placeholder-[#7587A4] focus:outline-none focus:border-[#86A8FF]"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#F8FAFB] border border-[#E2E8F0] text-sm text-[#1E293B] placeholder-[#7587A4] focus:outline-none focus:border-[#16A34A]"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-mono text-[#ADBBD0]">Company / Organization *</label>
+                    <label className="text-xs font-mono text-[#64748B]">Company / Organization *</label>
                     <input
                       type="text"
                       required
                       placeholder="Anthropic Labs"
                       value={formData.company}
                       onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#0B1220] border border-white/10 text-sm text-[#F4F6FB] placeholder-[#7587A4] focus:outline-none focus:border-[#86A8FF]"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#F8FAFB] border border-[#E2E8F0] text-sm text-[#1E293B] placeholder-[#7587A4] focus:outline-none focus:border-[#16A34A]"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-mono text-[#ADBBD0]">Organization Size *</label>
+                    <label className="text-xs font-mono text-[#64748B]">Organization Size *</label>
                     <select
                       value={formData.organization_size}
                       onChange={(e) => setFormData({ ...formData, organization_size: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#0B1220] border border-white/10 text-sm text-[#F4F6FB] focus:outline-none focus:border-[#86A8FF]"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#F8FAFB] border border-[#E2E8F0] text-sm text-[#1E293B] focus:outline-none focus:border-[#16A34A]"
                     >
                       <option value="1-15">1-15 engineers</option>
                       <option value="15-50">15-50 engineers</option>
@@ -135,11 +135,11 @@ export default function ContactPage() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-mono text-[#ADBBD0]">Primary Use Case *</label>
+                  <label className="text-xs font-mono text-[#64748B]">Primary Use Case *</label>
                   <select
                     value={formData.primary_use_case}
                     onChange={(e) => setFormData({ ...formData, primary_use_case: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#0B1220] border border-white/10 text-sm text-[#F4F6FB] focus:outline-none focus:border-[#86A8FF]"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#F8FAFB] border border-[#E2E8F0] text-sm text-[#1E293B] focus:outline-none focus:border-[#16A34A]"
                   >
                     <option value="Release Gating for LLM Applications">Release Gating for LLM Applications</option>
                     <option value="Adversarial Red-Team Consultancy Deliverables">Adversarial Red-Team Consultancy Deliverables</option>
@@ -150,14 +150,14 @@ export default function ContactPage() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-mono text-[#ADBBD0]">Testing Objectives & Models *</label>
+                  <label className="text-xs font-mono text-[#64748B]">Testing Objectives & Models *</label>
                   <textarea
                     rows={4}
                     required
                     placeholder="We evaluate autonomous tool-use agents and need to prevent canary exfiltration and generate signed evidence for our audit committee..."
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#0B1220] border border-white/10 text-sm text-[#F4F6FB] placeholder-[#7587A4] focus:outline-none focus:border-[#86A8FF]"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#F8FAFB] border border-[#E2E8F0] text-sm text-[#1E293B] placeholder-[#7587A4] focus:outline-none focus:border-[#16A34A]"
                   />
                 </div>
 
@@ -168,18 +168,18 @@ export default function ContactPage() {
                 >
                   {loading ? (
                     <>
-                      <Loader2 className="w-4 h-4 animate-spin text-[#86A8FF]" />
+                      <Loader2 className="w-4 h-4 animate-spin text-[#16A34A]" />
                       <span>Scheduling Demo...</span>
                     </>
                   ) : (
                     <>
-                      <Send className="w-4 h-4 text-[#86A8FF]" />
+                      <Send className="w-4 h-4 text-[#16A34A]" />
                       <span>Request Architectural Demo</span>
                     </>
                   )}
                 </button>
 
-                <p className="text-[11px] text-center text-[#7587A4] font-mono">
+                <p className="text-[11px] text-center text-[#94A3B8] font-mono">
                   Your information is protected under our evaluation confidentiality disclosure policy.
                 </p>
               </form>

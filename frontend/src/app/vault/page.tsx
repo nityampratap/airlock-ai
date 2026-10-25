@@ -109,15 +109,15 @@ export default function EvidenceVaultPage() {
     <AppShell>
       <div className="space-y-8 max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-white/[0.08]">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-[#E2E8F0]">
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold text-[#F4F6FB] tracking-tight">Evidence Vault</h1>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#68CFA9]/10 text-[#68CFA9] border border-[#68CFA9]/20">
+              <h1 className="text-2xl font-bold text-[#1E293B] tracking-tight">Evidence Vault</h1>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#F0FDF4] text-[#16A34A] border border-[#BBF7D0]/20">
                 ED25519 SEALED
               </span>
             </div>
-            <p className="text-xs text-[#ADBBD0] mt-1">
+            <p className="text-xs text-[#64748B] mt-1">
               Immutable ledger of completed AI evaluations with SHA-256 canonical hash chains and downloadable digital receipts.
             </p>
           </div>
@@ -128,7 +128,7 @@ export default function EvidenceVaultPage() {
               disabled={!receiptDetails}
               className="clay-btn-primary inline-flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-xl cursor-pointer disabled:opacity-50"
             >
-              <Download className="w-3.5 h-3.5 text-[#86A8FF]" />
+              <Download className="w-3.5 h-3.5 text-[#16A34A]" />
               <span>Download Signed Receipt (.json)</span>
             </button>
           </div>
@@ -138,9 +138,9 @@ export default function EvidenceVaultPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Left Column: Run History */}
           <div className="lg:col-span-5 clay-card p-6 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
-              <h2 className="text-sm font-bold text-[#F4F6FB]">Evaluation Runs</h2>
-              <span className="text-xs font-mono text-[#7587A4]">{runs.length} Runs Sealed</span>
+            <div className="flex items-center justify-between pb-3 border-b border-[#E2E8F0]">
+              <h2 className="text-sm font-bold text-[#1E293B]">Evaluation Runs</h2>
+              <span className="text-xs font-mono text-[#94A3B8]">{runs.length} Runs Sealed</span>
             </div>
 
             <div className="space-y-2.5 max-h-[600px] overflow-y-auto">
@@ -152,28 +152,28 @@ export default function EvidenceVaultPage() {
                     onClick={() => loadRunDetails(r.id)}
                     className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
                       isSelected
-                        ? "bg-[#1B2942] border-[#86A8FF]/50 shadow-md"
-                        : "bg-[#121C30]/50 border-white/[0.06] hover:bg-[#121C30]"
+                        ? "bg-[#F0FDF4] border-[#16A34A]/50 shadow-md"
+                        : "bg-[#F0FDF4]/50 border-[#E2E8F0] hover:bg-[#F0FDF4]"
                     }`}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold font-mono text-[#F4F6FB]">
+                      <span className="text-xs font-bold font-mono text-[#1E293B]">
                         {r.scenario_type.replace(/_/g, " ")}
                       </span>
                       <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${
                         r.unauthorized_request_blocked
-                          ? "bg-[#E5838F]/10 text-[#E5838F]"
-                          : "bg-[#68CFA9]/10 text-[#68CFA9]"
+                          ? "bg-[#FEF2F2] text-[#DC2626]"
+                          : "bg-[#F0FDF4] text-[#16A34A]"
                       }`}>
                         {r.unauthorized_request_blocked ? "BLOCKED" : "UNRESTRICTED"}
                       </span>
                     </div>
 
-                    <p className="text-[11px] text-[#7587A4] font-mono mt-1 truncate">ID: {r.id}</p>
+                    <p className="text-[11px] text-[#94A3B8] font-mono mt-1 truncate">ID: {r.id}</p>
 
-                    <div className="mt-2 pt-2 border-t border-white/[0.04] flex items-center justify-between text-[10px] font-mono text-[#ADBBD0]">
+                    <div className="mt-2 pt-2 border-t border-[#E2E8F0] flex items-center justify-between text-[10px] font-mono text-[#64748B]">
                       <span>Latency: {r.duration_ms}ms</span>
-                      <span className="text-[#68CFA9]">✓ Ed25519 Sealed</span>
+                      <span className="text-[#16A34A]">✓ Ed25519 Sealed</span>
                     </div>
                   </div>
                 );
@@ -186,30 +186,30 @@ export default function EvidenceVaultPage() {
             {/* Run Metadata Card */}
             {selectedRun && (
               <div className="clay-card p-6 space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+                <div className="flex items-center justify-between pb-3 border-b border-[#E2E8F0]">
                   <div>
-                    <h3 className="text-base font-bold text-[#F4F6FB]">
+                    <h3 className="text-base font-bold text-[#1E293B]">
                       Evaluation Proof Details
                     </h3>
-                    <p className="text-xs text-[#7587A4] font-mono">
+                    <p className="text-xs text-[#94A3B8] font-mono">
                       Target: {selectedRun.evaluation.target_model_name}
                     </p>
                   </div>
-                  <span className="text-xs font-mono px-2 py-1 rounded bg-[#68CFA9]/10 text-[#68CFA9] border border-[#68CFA9]/20">
+                  <span className="text-xs font-mono px-2 py-1 rounded bg-[#F0FDF4] text-[#16A34A] border border-[#BBF7D0]/20">
                     STATUS: {selectedRun.evaluation.status.toUpperCase()}
                   </span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 text-xs font-mono">
-                  <div className="p-3 rounded-lg bg-[#070D18] border border-white/[0.06]">
-                    <span className="text-[#7587A4]">Terminal Root Hash:</span>
-                    <p className="text-[#68CFA9] truncate mt-1">
+                  <div className="p-3 rounded-lg bg-[#F8FAFB] border border-[#E2E8F0]">
+                    <span className="text-[#94A3B8]">Terminal Root Hash:</span>
+                    <p className="text-[#16A34A] truncate mt-1">
                       {selectedRun.receipt?.root_hash || "208307772a5a7cea5915fdfa0a0e144cfef753f3..."}
                     </p>
                   </div>
-                  <div className="p-3 rounded-lg bg-[#070D18] border border-white/[0.06]">
-                    <span className="text-[#7587A4]">Signer Algorithm:</span>
-                    <p className="text-[#86A8FF] mt-1">
+                  <div className="p-3 rounded-lg bg-[#F8FAFB] border border-[#E2E8F0]">
+                    <span className="text-[#94A3B8]">Signer Algorithm:</span>
+                    <p className="text-[#16A34A] mt-1">
                       {selectedRun.receipt?.algorithm || "Ed25519-SHA256"}
                     </p>
                   </div>
@@ -217,14 +217,14 @@ export default function EvidenceVaultPage() {
 
                 {/* Audit Event Timeline */}
                 <div className="space-y-2 pt-2">
-                  <p className="text-xs font-mono text-[#ADBBD0] font-semibold">
+                  <p className="text-xs font-mono text-[#64748B] font-semibold">
                     Sequential Audit Chain Events ({selectedRun.audit_events?.length || 0} chained):
                   </p>
                   <div className="space-y-2 max-h-48 overflow-y-auto font-mono text-[11px]">
                     {selectedRun.audit_events?.map((ev: any) => (
-                      <div key={ev.sequence_index} className="p-2.5 rounded-lg bg-[#0E1626] border border-white/[0.04] flex items-center justify-between">
-                        <span className="text-[#86A8FF]">#{ev.sequence_index} {ev.event_type}</span>
-                        <span className="text-[#7587A4] text-[10px]">{ev.current_hash.slice(0, 16)}...</span>
+                      <div key={ev.sequence_index} className="p-2.5 rounded-lg bg-white border border-[#E2E8F0] flex items-center justify-between">
+                        <span className="text-[#16A34A]">#{ev.sequence_index} {ev.event_type}</span>
+                        <span className="text-[#94A3B8] text-[10px]">{ev.current_hash.slice(0, 16)}...</span>
                       </div>
                     ))}
                   </div>
@@ -233,18 +233,18 @@ export default function EvidenceVaultPage() {
             )}
 
             {/* In-Browser Interactive Cryptographic Verifier Tool */}
-            <div className="clay-card p-6 space-y-4 border-[#86A8FF]/20">
-              <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+            <div className="clay-card p-6 space-y-4 border-[#BBF7D0]">
+              <div className="flex items-center justify-between pb-3 border-b border-[#E2E8F0]">
                 <div className="flex items-center gap-2">
-                  <Fingerprint className="w-5 h-5 text-[#86A8FF]" />
-                  <h3 className="text-sm font-bold text-[#F4F6FB]">
+                  <Fingerprint className="w-5 h-5 text-[#16A34A]" />
+                  <h3 className="text-sm font-bold text-[#1E293B]">
                     Independent Cryptographic Verifier Tool
                   </h3>
                 </div>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={injectTamper}
-                    className="px-2.5 py-1 rounded bg-[#E5838F]/15 hover:bg-[#E5838F]/25 text-[#E5838F] border border-[#E5838F]/30 text-[11px] font-mono font-semibold transition-colors"
+                    className="px-2.5 py-1 rounded bg-[#FEF2F2] hover:bg-[#E5838F]/25 text-[#DC2626] border border-[#FECACA]/30 text-[11px] font-mono font-semibold transition-colors"
                   >
                     Inject Tamper Mutation
                   </button>
@@ -259,7 +259,7 @@ export default function EvidenceVaultPage() {
                 </div>
               </div>
 
-              <p className="text-xs text-[#ADBBD0]">
+              <p className="text-xs text-[#64748B]">
                 Paste or inspect the raw canonical JSON receipt below. Click &quot;Verify Receipt&quot; to compute the SHA-256 chain and validate the Ed25519 signature, or click &quot;Inject Tamper Mutation&quot; to test rejection.
               </p>
 
@@ -267,31 +267,31 @@ export default function EvidenceVaultPage() {
                 rows={7}
                 value={verifierInput}
                 onChange={(e) => setVerifierInput(e.target.value)}
-                className="w-full p-3 rounded-xl bg-[#070D18] border border-white/10 font-mono text-[11px] text-[#ADBBD0] focus:outline-none focus:border-[#86A8FF]"
+                className="w-full p-3 rounded-xl bg-[#F8FAFB] border border-[#E2E8F0] font-mono text-[11px] text-[#64748B] focus:outline-none focus:border-[#16A34A]"
               />
 
               {verificationResult && (
                 <div className={`p-4 rounded-xl border font-mono text-xs space-y-1.5 ${
                   verificationResult.is_valid
-                    ? "bg-[#68CFA9]/10 border-[#68CFA9]/40 text-[#68CFA9]"
-                    : "bg-[#E5838F]/10 border-[#E5838F]/40 text-[#E5838F]"
+                    ? "bg-[#F0FDF4] border-[#16A34A] text-[#16A34A]"
+                    : "bg-[#FEF2F2] border-[#FECACA]/40 text-[#DC2626]"
                 }`}>
                   <div className="flex items-center gap-2 font-bold">
                     {verificationResult.is_valid ? (
-                      <CheckCircle2 className="w-4 h-4 text-[#68CFA9]" />
+                      <CheckCircle2 className="w-4 h-4 text-[#16A34A]" />
                     ) : (
-                      <AlertTriangle className="w-4 h-4 text-[#E5838F]" />
+                      <AlertTriangle className="w-4 h-4 text-[#DC2626]" />
                     )}
                     <span>{verificationResult.is_valid ? "STATUS: VALID AUDIT RECEIPT (PASS)" : "STATUS: TAMPER DETECTED / REJECTED (FAIL)"}</span>
                   </div>
-                  <p className="text-[11px] text-[#F4F6FB]">{verificationResult.message}</p>
+                  <p className="text-[11px] text-[#1E293B]">{verificationResult.message}</p>
                 </div>
               )}
 
               {/* CLI Command Helper */}
-              <div className="p-3 rounded-xl bg-[#070D18] border border-white/[0.06] text-[11px] font-mono text-[#7587A4] space-y-1">
-                <span className="text-[#86A8FF]">Offline Independent Verification:</span>
-                <p className="text-[#ADBBD0]">python backend/cli_verifier.py downloaded_receipt.json</p>
+              <div className="p-3 rounded-xl bg-[#F8FAFB] border border-[#E2E8F0] text-[11px] font-mono text-[#94A3B8] space-y-1">
+                <span className="text-[#16A34A]">Offline Independent Verification:</span>
+                <p className="text-[#64748B]">python backend/cli_verifier.py downloaded_receipt.json</p>
               </div>
             </div>
           </div>

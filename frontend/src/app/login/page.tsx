@@ -58,40 +58,37 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B1220] flex items-center justify-center p-4">
-      {/* Background glow */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-[#86A8FF]/10 rounded-full blur-3xl pointer-events-none" />
-
-      <div className="max-w-md w-full relative z-10 space-y-6">
+    <div className="min-h-screen bg-[#F8FAFB] flex items-center justify-center p-4">
+      <div className="max-w-md w-full space-y-6">
         <div className="text-center space-y-2">
           <Link href="/" className="inline-flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#86A8FF]/20 to-[#A5A0F4]/10 border border-[#86A8FF]/30 flex items-center justify-center text-[#86A8FF] shadow-[0_0_20px_rgba(134,168,255,0.2)]">
-              <ShieldCheck className="w-5 h-5 text-[#86A8FF]" />
+            <div className="w-10 h-10 rounded-xl bg-[#F0FDF4] border border-[#BBF7D0] flex items-center justify-center text-[#16A34A]">
+              <ShieldCheck className="w-5 h-5" />
             </div>
-            <span className="font-bold tracking-tight text-xl text-[#F4F6FB]">
-              AIRLOCK <span className="text-[#86A8FF] font-mono text-xs">AI</span>
+            <span className="font-bold tracking-tight text-xl text-[#1E293B]">
+              Airlock <span className="text-[#16A34A] text-xs px-1.5 py-0.5 rounded-md bg-[#F0FDF4] border border-[#BBF7D0] font-medium">AI</span>
             </span>
           </Link>
-          <p className="text-xs text-[#ADBBD0] font-mono">
-            EVALUATION ASSURANCE & AUDIT CONSOLE
+          <p className="text-sm text-[#94A3B8]">
+            Evaluation Assurance & Audit Console
           </p>
         </div>
 
-        <div className="clay-card p-8 space-y-6">
-          <div className="flex items-center justify-between pb-4 border-b border-white/[0.08]">
-            <h2 className="text-lg font-bold text-[#F4F6FB]">
-              {isRegister ? "Create Organization Account" : "Authenticate Session"}
+        <div className="bg-white border border-[#E2E8F0] rounded-xl shadow-sm p-8 space-y-6">
+          <div className="flex items-center justify-between pb-4 border-b border-[#E2E8F0]">
+            <h2 className="text-lg font-semibold text-[#1E293B]">
+              {isRegister ? "Create Account" : "Sign in"}
             </h2>
             <button
               onClick={() => setIsRegister(!isRegister)}
-              className="text-xs font-mono text-[#86A8FF] hover:underline"
+              className="text-xs text-[#16A34A] hover:underline"
             >
-              {isRegister ? "Existing account? Sign in" : "New organization? Register"}
+              {isRegister ? "Have an account? Sign in" : "New here? Register"}
             </button>
           </div>
 
           {error && (
-            <div className="p-3 rounded-lg bg-[#E5838F]/10 border border-[#E5838F]/30 text-xs text-[#E5838F]">
+            <div className="p-3 rounded-lg bg-[#FEF2F2] border border-[#FECACA] text-xs text-[#DC2626]">
               {error}
             </div>
           )}
@@ -100,81 +97,81 @@ export default function LoginPage() {
             {isRegister && (
               <>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-mono text-[#ADBBD0]">Full Name</label>
+                  <label className="text-xs font-medium text-[#64748B]">Full Name</label>
                   <input
                     type="text"
                     required
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#0B1220] border border-white/10 text-sm text-[#F4F6FB] focus:outline-none focus:border-[#86A8FF]"
+                    className="w-full px-3.5 py-2.5 rounded-lg bg-[#F8FAFB] border border-[#E2E8F0] text-sm text-[#1E293B] focus:outline-none focus:border-[#16A34A] focus:ring-2 focus:ring-[#16A34A]/10"
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-mono text-[#ADBBD0]">Organization Name</label>
+                  <label className="text-xs font-medium text-[#64748B]">Organization Name</label>
                   <input
                     type="text"
                     required
                     value={orgName}
                     onChange={(e) => setOrgName(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#0B1220] border border-white/10 text-sm text-[#F4F6FB] focus:outline-none focus:border-[#86A8FF]"
+                    className="w-full px-3.5 py-2.5 rounded-lg bg-[#F8FAFB] border border-[#E2E8F0] text-sm text-[#1E293B] focus:outline-none focus:border-[#16A34A] focus:ring-2 focus:ring-[#16A34A]/10"
                   />
                 </div>
               </>
             )}
 
             <div className="space-y-1.5">
-              <label className="text-xs font-mono text-[#ADBBD0]">Work Email</label>
+              <label className="text-xs font-medium text-[#64748B]">Work Email</label>
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-[#0B1220] border border-white/10 text-sm text-[#F4F6FB] focus:outline-none focus:border-[#86A8FF]"
+                className="w-full px-3.5 py-2.5 rounded-lg bg-[#F8FAFB] border border-[#E2E8F0] text-sm text-[#1E293B] focus:outline-none focus:border-[#16A34A] focus:ring-2 focus:ring-[#16A34A]/10"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-mono text-[#ADBBD0]">Password</label>
+              <label className="text-xs font-medium text-[#64748B]">Password</label>
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-[#0B1220] border border-white/10 text-sm text-[#F4F6FB] focus:outline-none focus:border-[#86A8FF]"
+                className="w-full px-3.5 py-2.5 rounded-lg bg-[#F8FAFB] border border-[#E2E8F0] text-sm text-[#1E293B] focus:outline-none focus:border-[#16A34A] focus:ring-2 focus:ring-[#16A34A]/10"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full clay-btn-primary py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              className="w-full bg-[#16A34A] hover:bg-[#15803D] text-white py-3 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 transition-colors shadow-sm"
             >
               {loading ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin text-[#86A8FF]" />
-                  <span>Verifying Session...</span>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Verifying...</span>
                 </>
               ) : (
                 <>
-                  <Lock className="w-4 h-4 text-[#86A8FF]" />
-                  <span>{isRegister ? "Create Organization" : "Enter Console"}</span>
+                  <Lock className="w-4 h-4" />
+                  <span>{isRegister ? "Create Account" : "Sign in"}</span>
                 </>
               )}
             </button>
           </form>
 
           {/* Quick Demo Preload Button */}
-          <div className="pt-2 border-t border-white/[0.06] text-center space-y-2">
+          <div className="pt-2 border-t border-[#E2E8F0] text-center space-y-2">
             <button
               type="button"
               onClick={handleQuickDemo}
               disabled={loading}
-              className="w-full py-2.5 px-3 rounded-xl bg-[#1B2942]/70 hover:bg-[#1B2942] border border-white/10 text-xs font-mono text-[#86A8FF] flex items-center justify-center gap-2 transition-colors"
+              className="w-full py-2.5 px-3 rounded-lg bg-[#F0FDF4] hover:bg-[#DCFCE7] border border-[#BBF7D0] text-xs text-[#16A34A] font-medium flex items-center justify-center gap-2 transition-colors"
             >
-              <KeyRound className="w-3.5 h-3.5 text-[#68CFA9]" />
-              <span>One-Click Preload: Elena Vance (Head of AI Security)</span>
+              <KeyRound className="w-3.5 h-3.5" />
+              <span>Quick Demo: Elena Vance (Head of AI Security)</span>
             </button>
-            <p className="text-[10px] text-[#7587A4] font-mono">
+            <p className="text-[11px] text-[#94A3B8]">
               Pre-seeded with realistic audit history & cryptographic receipts.
             </p>
           </div>

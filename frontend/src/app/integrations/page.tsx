@@ -52,14 +52,14 @@ export default function IntegrationsPage() {
   return (
     <AppShell>
       <div className="space-y-8 max-w-7xl mx-auto">
-        <div className="pb-6 border-b border-white/[0.08]">
+        <div className="pb-6 border-b border-[#E2E8F0]">
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-[#F4F6FB] tracking-tight">Integrations Architecture</h1>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#86A8FF]/10 text-[#86A8FF] border border-[#86A8FF]/20">
+            <h1 className="text-2xl font-bold text-[#1E293B] tracking-tight">Integrations Architecture</h1>
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#F0FDF4] text-[#16A34A] border border-[#BBF7D0]">
               GATEWAY MANAGED
             </span>
           </div>
-          <p className="text-xs text-[#ADBBD0] mt-1">
+          <p className="text-xs text-[#64748B] mt-1">
             Connected inference proxies, intelligence streams, and notification destinations. Only active integrations are permitted inside execution brokers.
           </p>
         </div>
@@ -67,31 +67,31 @@ export default function IntegrationsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {INTEGRATIONS.map((item) => (
             <div key={item.id} className="clay-card p-6 space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-white/[0.06]">
+              <div className="flex items-center justify-between pb-3 border-b border-[#E2E8F0]">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-[#86A8FF]/10 flex items-center justify-center text-[#86A8FF]">
+                  <div className="w-8 h-8 rounded-lg bg-[#F0FDF4] flex items-center justify-center text-[#16A34A]">
                     <Layers className="w-4 h-4" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-[#F4F6FB]">{item.name}</h3>
-                    <p className="text-[10px] font-mono text-[#86A8FF]">{item.category}</p>
+                    <h3 className="text-sm font-bold text-[#1E293B]">{item.name}</h3>
+                    <p className="text-[10px] font-mono text-[#16A34A]">{item.category}</p>
                   </div>
                 </div>
 
                 <span className={`text-[10px] font-mono px-2 py-0.5 rounded ${
                   item.active
-                    ? "bg-[#68CFA9]/10 text-[#68CFA9] border border-[#68CFA9]/20"
-                    : "bg-white/[0.04] text-[#7587A4]"
+                    ? "bg-[#F0FDF4] text-[#16A34A] border border-[#BBF7D0]/20"
+                    : "bg-[#F8FAFB] text-[#94A3B8]"
                 }`}>
                   {item.status}
                 </span>
               </div>
 
-              <p className="text-xs text-[#ADBBD0] leading-relaxed">{item.desc}</p>
+              <p className="text-xs text-[#64748B] leading-relaxed">{item.desc}</p>
 
-              <div className="pt-2 flex items-center justify-between text-xs font-mono text-[#7587A4]">
+              <div className="pt-2 flex items-center justify-between text-xs font-mono text-[#94A3B8]">
                 <span>Isolation Boundary:</span>
-                <span className="text-[#68CFA9]">BROKER VERIFIED</span>
+                <span className="text-[#16A34A]">BROKER VERIFIED</span>
               </div>
             </div>
           ))}

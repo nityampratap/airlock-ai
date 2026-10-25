@@ -24,10 +24,10 @@ export interface ClayCardProps extends HTMLAttributes<HTMLDivElement> {
 export const ClayCard = forwardRef<HTMLDivElement, ClayCardProps>(
   ({ variant = "default", glow = "none", padding = "md", animated = false, className, children, ...props }, ref) => {
     const baseClasses: Record<string, string> = {
-      default: "clay-card",
-      interactive: "clay-card-interactive",
-      surface: "clay-surface",
-      compact: "clay-card",
+      default: "bg-white border border-[#E2E8F0] rounded-xl shadow-sm",
+      interactive: "bg-white border border-[#E2E8F0] rounded-xl shadow-sm hover:shadow-md hover:border-[#CBD5E1] transition-all cursor-pointer",
+      surface: "bg-[#F8FAFB] border border-[#E2E8F0] rounded-lg",
+      compact: "bg-white border border-[#E2E8F0] rounded-xl shadow-sm",
     };
 
     const paddingClasses: Record<string, string> = {
@@ -37,17 +37,9 @@ export const ClayCard = forwardRef<HTMLDivElement, ClayCardProps>(
       lg: "p-8",
     };
 
-    const glowClasses: Record<string, string> = {
-      none: "",
-      periwinkle: "glow-periwinkle",
-      safe: "glow-safe",
-      danger: "glow-danger",
-    };
-
     const combined = cn(
       baseClasses[variant],
       paddingClasses[padding],
-      glowClasses[glow],
       className
     );
 
@@ -56,9 +48,9 @@ export const ClayCard = forwardRef<HTMLDivElement, ClayCardProps>(
         <motion.div
           ref={ref}
           className={combined}
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
           {...(props as HTMLMotionProps<"div">)}
         >
           {children}
@@ -92,17 +84,17 @@ export interface ClayButtonProps extends HTMLAttributes<HTMLButtonElement> {
 export const ClayButton = forwardRef<HTMLButtonElement, ClayButtonProps>(
   ({ variant = "primary", size = "md", loading, icon, iconRight, disabled, className, children, ...props }, ref) => {
     const variantClasses: Record<string, string> = {
-      primary: "clay-btn-primary",
-      secondary: "clay-btn-secondary",
-      danger: "clay-btn-danger",
-      success: "clay-btn-success",
-      ghost: "bg-transparent border border-white/10 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/[0.04] hover:border-white/20 transition-all",
+      primary: "bg-[#16A34A] border border-[#16A34A] text-white hover:bg-[#15803D] shadow-sm",
+      secondary: "bg-white border border-[#E2E8F0] text-[#475569] hover:bg-[#F8FAFB] hover:border-[#CBD5E1] hover:text-[#1E293B]",
+      danger: "bg-[#FEF2F2] border border-[#FECACA] text-[#DC2626] hover:bg-[#FEE2E2]",
+      success: "bg-[#F0FDF4] border border-[#BBF7D0] text-[#15803D] hover:bg-[#DCFCE7]",
+      ghost: "bg-transparent border border-transparent text-[#475569] hover:text-[#1E293B] hover:bg-[#F1F5F9] transition-all",
     };
 
     const sizeClasses: Record<string, string> = {
       sm: "px-3 py-1.5 text-xs rounded-lg gap-1.5",
-      md: "px-4 py-2.5 text-sm rounded-xl gap-2",
-      lg: "px-6 py-3.5 text-base rounded-xl gap-2.5",
+      md: "px-4 py-2.5 text-sm rounded-lg gap-2",
+      lg: "px-6 py-3 text-base rounded-lg gap-2.5",
     };
 
     return (
@@ -110,7 +102,7 @@ export const ClayButton = forwardRef<HTMLButtonElement, ClayButtonProps>(
         ref={ref}
         disabled={disabled || loading}
         className={cn(
-          "inline-flex items-center justify-center font-semibold transition-all",
+          "inline-flex items-center justify-center font-medium transition-all duration-150",
           variantClasses[variant],
           sizeClasses[size],
           (disabled || loading) && "opacity-50 cursor-not-allowed pointer-events-none",
@@ -146,9 +138,9 @@ export interface GlassPanelProps extends HTMLAttributes<HTMLDivElement> {
 export const GlassPanel = forwardRef<HTMLDivElement, GlassPanelProps>(
   ({ intensity = "medium", padding = "md", className, children, ...props }, ref) => {
     const intensityClasses: Record<string, string> = {
-      subtle: "glass-panel border-white/[0.06]",
-      medium: "glass-panel",
-      strong: "glass-panel-strong",
+      subtle: "bg-white/80 backdrop-blur-md border border-[#E2E8F0] rounded-xl",
+      medium: "bg-white/85 backdrop-blur-lg border border-[#E2E8F0] rounded-xl shadow-sm",
+      strong: "bg-white/92 backdrop-blur-xl border border-[#E2E8F0] rounded-xl shadow-sm",
     };
 
     const paddingClasses: Record<string, string> = {
@@ -183,19 +175,19 @@ export interface StatusBadgeProps extends HTMLAttributes<HTMLSpanElement> {
 export const StatusBadge = forwardRef<HTMLSpanElement, StatusBadgeProps>(
   ({ variant = "info", dot = false, pulseDot = false, className, children, ...props }, ref) => {
     const badgeClasses: Record<string, string> = {
-      safe: "badge-safe",
-      danger: "badge-danger",
-      info: "badge-info",
-      warning: "badge-warning",
-      neutral: "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/[0.06] border border-white/[0.08] text-[var(--text-secondary)] text-[0.6875rem] font-mono font-medium",
+      safe: "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#F0FDF4] border border-[#BBF7D0] text-[#15803D] text-xs font-medium",
+      danger: "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#FEF2F2] border border-[#FECACA] text-[#DC2626] text-xs font-medium",
+      info: "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#EFF6FF] border border-[#BFDBFE] text-[#2563EB] text-xs font-medium",
+      warning: "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#FFFBEB] border border-[#FDE68A] text-[#D97706] text-xs font-medium",
+      neutral: "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#F1F5F9] border border-[#E2E8F0] text-[#64748B] text-xs font-medium",
     };
 
     const dotColors: Record<string, string> = {
-      safe: "bg-[#75D6B1]",
-      danger: "bg-[#EC8995]",
-      info: "bg-[#8CA9FF]",
-      warning: "bg-[#E9BD7B]",
-      neutral: "bg-[var(--text-muted)]",
+      safe: "bg-[#16A34A]",
+      danger: "bg-[#DC2626]",
+      info: "bg-[#2563EB]",
+      warning: "bg-[#D97706]",
+      neutral: "bg-[#94A3B8]",
     };
 
     return (
@@ -225,16 +217,16 @@ export interface ClayMetricProps {
   animated?: boolean;
 }
 
-export function ClayMetric({ label, value, subtitle, trend, trendUp, icon, accentColor = "#8CA9FF", animated = true }: ClayMetricProps) {
+export function ClayMetric({ label, value, subtitle, trend, trendUp, icon, accentColor = "#16A34A", animated = true }: ClayMetricProps) {
   const content = (
     <>
       <div className="flex items-center justify-between">
-        <span className="text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider">{label}</span>
+        <span className="text-xs font-medium text-[#94A3B8] uppercase tracking-wide">{label}</span>
         {icon && (
-          <div 
-            className="w-8 h-8 rounded-lg flex items-center justify-center"
-            style={{ 
-              backgroundColor: `${accentColor}15`,
+          <div
+            className="w-9 h-9 rounded-lg flex items-center justify-center"
+            style={{
+              backgroundColor: `${accentColor}12`,
               color: accentColor
             }}
           >
@@ -242,19 +234,19 @@ export function ClayMetric({ label, value, subtitle, trend, trendUp, icon, accen
           </div>
         )}
       </div>
-      <div className="flex items-baseline gap-2.5">
-        <span className="text-3xl font-extrabold text-[var(--text-primary)] tabular-nums tracking-tight">{value}</span>
+      <div className="flex items-baseline gap-2.5 mt-1">
+        <span className="text-3xl font-bold text-[#1E293B] tabular-nums tracking-tight">{value}</span>
         {trend && (
           <span className={cn(
-            "text-[11px] font-mono flex items-center gap-0.5",
-            trendUp ? "text-[#75D6B1]" : "text-[#EC8995]"
+            "text-xs font-medium flex items-center gap-0.5",
+            trendUp ? "text-[#16A34A]" : "text-[#DC2626]"
           )}>
             {trend}
           </span>
         )}
       </div>
       {subtitle && (
-        <p className="text-[11px] text-[var(--text-muted)] font-mono">{subtitle}</p>
+        <p className="text-xs text-[#94A3B8] mt-1">{subtitle}</p>
       )}
     </>
   );
@@ -262,10 +254,10 @@ export function ClayMetric({ label, value, subtitle, trend, trendUp, icon, accen
   if (animated) {
     return (
       <motion.div
-        className="clay-card p-5 space-y-3"
-        initial={{ opacity: 0, y: 16 }}
+        className="bg-white border border-[#E2E8F0] rounded-xl p-5 space-y-2 shadow-sm"
+        initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
       >
         {content}
       </motion.div>
@@ -273,7 +265,7 @@ export function ClayMetric({ label, value, subtitle, trend, trendUp, icon, accen
   }
 
   return (
-    <div className="clay-card p-5 space-y-3">
+    <div className="bg-white border border-[#E2E8F0] rounded-xl p-5 space-y-2 shadow-sm">
       {content}
     </div>
   );
@@ -283,29 +275,29 @@ export function ClayMetric({ label, value, subtitle, trend, trendUp, icon, accen
    SECTION HEADER
    ═══════════════════════════════════════════ */
 
-export function SectionHeader({ 
-  eyebrow, 
-  title, 
-  description, 
+export function SectionHeader({
+  eyebrow,
+  title,
+  description,
   centered = false,
-  children 
-}: { 
-  eyebrow?: string; 
-  title: string; 
-  description?: string; 
+  children
+}: {
+  eyebrow?: string;
+  title: string;
+  description?: string;
   centered?: boolean;
   children?: ReactNode;
 }) {
   return (
-    <div className={cn("space-y-3 max-w-3xl", centered && "mx-auto text-center")}>
+    <div className={cn("space-y-2 max-w-3xl", centered && "mx-auto text-center")}>
       {eyebrow && (
-        <span className="text-xs font-mono text-[#8CA9FF] uppercase tracking-wider">{eyebrow}</span>
+        <span className="text-xs font-medium text-[#16A34A] uppercase tracking-wide">{eyebrow}</span>
       )}
-      <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[var(--text-primary)] tracking-tight leading-tight">
+      <h2 className="text-2xl sm:text-3xl font-bold text-[#1E293B] tracking-tight leading-tight">
         {title}
       </h2>
       {description && (
-        <p className="text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed">
+        <p className="text-sm text-[#64748B] leading-relaxed">
           {description}
         </p>
       )}
@@ -315,25 +307,25 @@ export function SectionHeader({
 }
 
 /* ═══════════════════════════════════════════
-   CLAY TERMINAL
+   CODE BLOCK (replaces terminal)
    ═══════════════════════════════════════════ */
 
-export function ClayTerminal({ 
+export function ClayTerminal({
   prompt = "broker@airlock:~$",
-  status = "ACTIVE",
-  children 
-}: { 
+  status = "Active",
+  children
+}: {
   prompt?: string;
   status?: string;
-  children: ReactNode; 
+  children: ReactNode;
 }) {
   return (
-    <div className="terminal-block p-4 space-y-2 text-xs">
-      <div className="text-[var(--text-muted)] flex items-center justify-between border-b border-white/[0.06] pb-2">
-        <span className="font-mono">{prompt}</span>
+    <div className="bg-[#1E293B] rounded-lg p-4 space-y-2 text-xs">
+      <div className="text-[#94A3B8] flex items-center justify-between border-b border-[#334155] pb-2">
+        <span className="font-mono text-[#CBD5E1]">{prompt}</span>
         <StatusBadge variant="safe" dot pulseDot>{status}</StatusBadge>
       </div>
-      <div className="font-mono text-[var(--text-secondary)] space-y-1">
+      <div className="font-mono text-[#CBD5E1] space-y-1">
         {children}
       </div>
     </div>
@@ -341,40 +333,16 @@ export function ClayTerminal({
 }
 
 /* ═══════════════════════════════════════════
-   AMBIENT ORB
+   AMBIENT ORB (no-op in light theme)
    ═══════════════════════════════════════════ */
 
-export function AmbientOrb({ 
-  color = "#8CA9FF", 
-  size = 400, 
-  blur = 120,
-  opacity = 0.08,
-  position = "center"
-}: { 
-  color?: string; 
+export function AmbientOrb(_props: {
+  color?: string;
   size?: number;
   blur?: number;
   opacity?: number;
   position?: "center" | "top-left" | "top-right" | "bottom-left" | "bottom-right";
 }) {
-  const positionClasses: Record<string, string> = {
-    center: "top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
-    "top-left": "top-0 left-0 -translate-x-1/4 -translate-y-1/4",
-    "top-right": "top-0 right-0 translate-x-1/4 -translate-y-1/4",
-    "bottom-left": "bottom-0 left-0 -translate-x-1/4 translate-y-1/4",
-    "bottom-right": "bottom-0 right-0 translate-x-1/4 translate-y-1/4",
-  };
-
-  return (
-    <div 
-      className={cn("absolute rounded-full pointer-events-none", positionClasses[position])}
-      style={{
-        width: size,
-        height: size * 0.6,
-        background: `radial-gradient(ellipse, ${color} 0%, transparent 70%)`,
-        filter: `blur(${blur}px)`,
-        opacity,
-      }}
-    />
-  );
+  // Intentionally renders nothing in the light theme
+  return null;
 }
